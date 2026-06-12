@@ -1,0 +1,81 @@
+\section{Functional XPath with Data: $\xpath$} 
+\label{sec:dxpath-f}
+
+In this section we introduce a fragment of the language considered in, e.g.,~\cite{ICDT14Jair,KR16,AbriolaDFF17,AbriolaBFF18}, which we call $\xpath$. The fragment is inspired by the modal logic $\knaltone$ which has $n$ modal operators interpreted as partial functions~\cite{blackburn2001modal}. 
+In brief, $\xpath$ is a two-sorted language which consists of  \emph{path} expressions and \emph{node} expressions.
+%Path expressions capture the navigational fragment of the language, whereas node expressions capture properties.
+Regarding path expressions, we restrict our attention to \emph{single steps} and \emph{composition}, excluding \emph{test} and \emph{choice}. Moreover, paths expressions will be interpreted as partial functions.  
+We do not impose restrictions on node expressions.
+As mentioned, these design decisions are aimed at establishing connections with some DL with concrete domains. 
+
+In what follows, we assume that $\props = \set{p_1, \dots, p_n, p, q, r, \dots}$ is a countable set of \emph{propositional symbols}, $\mods=\set{\apath_1, \dots, \apath_n}$ is a finite set of \emph{modal labels}, and $\cmps = \set{\cmp_1, \dots, \cmp_m}$ is a finite set of \emph{comparison labels}. 
+
+\begin{definition} [Language]\label{def:xpath:lang}
+    The set $\pexp$ of path expressions (written $\alpha, \beta, \dots$)  and $\nexp$ of node expressions (written $\varphi, \psi, \dots$) of $\xpath$ are defined by the grammar:
+    \begin{align*}
+        \alpha, \beta & \Coloneqq
+            \apath \mid
+            \alpha \beta  \\
+        \varphi, \psi & \Coloneqq
+            p \mid
+            \lnot \varphi \mid
+            \varphi \land \psi \mid
+            \tup{\alpha =_\cmp   \beta} \mid
+            \tup{\alpha \neq_\cmp   \beta},
+      \end{align*}
+     where $p \in \props$, $\apath \in \mods$, $\cmp \in \cmps$. Other Boolean connectives are defined as usual. We also define $[\alpha=_\cmp\beta]$ as $\neg\tup{\alpha\neq_\cmp\beta}$ and $[\alpha\neq_\cmp\beta]$ as $\neg\tup{\alpha=_\cmp\beta}$. 
+\end{definition}
+
+Notice that path expressions are simply elements from $\mods^+$. This inductive definition in terms of composition will be handy in some proofs. Now we introduce the structures in which we evaluate $\xpath$ expressions.
+
+\begin{definition}[Data Model] \label{def:model:xpath}
+     A \emph{data model} is a structure defined as
+     $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$, where:
+    \begin{enumerate}
+        \item 
+            $\N$ is a non-empty set of \emph{nodes};
+        \item 
+            $\D$ is a non-empty set of \emph{data values};
+        \item 
+            for each $\apath \in \mods$, $\R_{\apath}$ is a \emph{functional} relation on $\N$;
+        \item 
+            $\valuation: \props \to 2^\N$ is the valuation function;
+        \item 
+            $\data_\cmp:  \N \to \D$ is a function which assigns a data value to each node of the model with respect to $\cmp\in\cmps$.
+    \end{enumerate}
+    If $(n,m)\in\R_\apath$, sometimes we will use $\R_\apath(n)$ to denote $m$ (recall that $\R_\apath$ is functional) and we say that $\R_\apath(n)$ is \emph{defined}. If such an $m$ does not exist we say  $\R_\apath(n)$ is \emph{undefined}.
+\end{definition}
+
+Here, data models are a particular case of the data graphs from, e.g.,~\cite{ICDT14Jair}, in which accessibility relations are partial functions. 
+
+In general, the set $\D$ of data values can be arbitrary, with the only condition imposed that it should be non-empty.  In what follows, and to properly establish the connection between XPath and DL with concrete domains, we will assume that a given $\D$ is fixed, containing all the data values that we need to consider, and the class of models is defined w.r.t.\ that fixed set of data values. 
+
+%As discussed, this fragment is enough to describe some interesting situations. Moreover, we will show that it can be used as a description language enjoying nice computational properties.
+
+\begin{definition}[Semantics] \label{def:xpath:semantics}
+    Let $\model$ be a data model such that $\model=\tup{\N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps}}$. 
+    We define the semantics of path and node expressions as:
+    \[\begin{array}{l@{\, } c l}
+        \truthset{ \apath }{\model}  
+            & = & \R_\apath \\
+        \truthset{ \alpha\beta }{\model}  
+            & = & \{(m,n)\mid \text{ there is } l \text{ s.t. }  \\
+            & & \qquad (m,l)\in\truthset{\alpha}{\model} \text{ and } (l,n)\in \truthset{\beta}{\model}\} \\
+        \truthset{ p }{\model}  & = & \valuation(p)  \\
+        \truthset{ \lnot \varphi }{\model}  
+            & = & \N \setminus \truthset{ \varphi }{\model} \\
+        \truthset{ \varphi \land \psi }{\model}  
+            & = & \truthset{ \varphi  }{\model}  \cap \truthset{  \psi }{\model}
+            \\    
+        \truthset{ \tup{ \alpha =_\cmp \beta } }{\model}   & = & \{ m \mid  \text{there are } n,l \text{ s.t } \\
+            & & \qquad (m,n) \in  \truthset{ \alpha }{\model} \text{ and } (m,l) \in  \truthset{ \beta }{\model}  \text{ and } \\
+            & & \qquad \data_\cmp(n)=\data_\cmp(l) \} \\
+        \truthset{ \tup{ \alpha \neq_\cmp \beta } }{\model}   & = & \{ m \mid  \text{there are } n,l \text{ s.t } \\
+            & & \qquad (m,n) \in  \truthset{ \alpha }{\model} \text{ and } (m,l) \in  \truthset{ \beta }{\model}  \text{ and } \\
+            & & \qquad \data_\cmp(n)\neq\data_\cmp(l) \}.
+    \end{array}\]
+    Note that the interpretation $\truthset{\alpha}{\model}$ of a path expression is a partial function on $\N$, whereas the interpretation $\truthset{\varphi}{\model}$ of a node expression is a subset of $\N$. 
+    A node expression $\varphi$ is \emph{satisfiable} iff there is a data model $\model$ such that $\truthset{\varphi}{\model} \neq \emptyset$. Finally, we write $\model,n\models\varphi$ (resp. $\model,n,m\models\alpha$) iff $n\in\truthset{\varphi}{\model}$ (resp. $(n,m)\in\truthset{\alpha}{\model}$).
+\end{definition}
+
+        

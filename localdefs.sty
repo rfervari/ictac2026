@@ -1,0 +1,390 @@
+% custom symbols and environments
+\ProvidesPackage{localdefs}
+
+\usepackage[small]{caption}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amsmath}
+% \usepackage{amsthm}
+\usepackage{booktabs}
+% \usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{color}
+
+%\usepackage{graphicx}
+%\usepackage{amsmath}
+% \usepackage{etex}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{dsfont}
+%\usepackage{enumerate}
+\usepackage{stmaryrd}
+%\usepackage{alltt}
+%\usepackage[all]{xy}
+%\usepackage{mathrsfs}
+%\usepackage{array}
+%\usepackage{tabularx}
+%\usepackage{wasysym}
+\usepackage{hyperref}
+%\usepackage[all]{xy}
+\hypersetup{
+  bookmarksnumbered = {true},
+  naturalnames      = {true},
+  colorlinks        = {true},
+  linkcolor         = black,
+  urlcolor          = black,
+  citecolor         = black
+}
+\usepackage{cleveref}
+
+% Local Packages
+%\usepackage{amscd}
+%\usepackage{xargs}
+%\usepackage{relsize}
+%\usepackage{xifthen}
+\usepackage{xspace}
+\usepackage{mathtools}
+\usepackage{textgreek}
+%\usepackage{proof}
+%\usepackage[textwidth=0.89in,textsize=scriptsize]{todonotes}
+%\usepackage{cases}
+\usepackage{multicol}
+%\usepackage[nomargin,inline,marginclue,draft]{fixme}
+
+%\usepackage{amsbsy}
+%\renewcommand{\vec}{\pmb}
+
+\usepackage{balance}
+
+\usepackage{paralist}
+
+%\usepackage[cal=esstix,frak=euler,scr=boondox,bb=pazo]{mathalfa}
+%\usepackage[cal=esstix,bb=pazo]{mathalfa}
+
+% \usepackage{thmtools}
+% \usepackage{thm-restate}
+
+\usepackage{tikz}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{
+  arrows,
+  decorations,
+  shapes,
+  automata,
+  positioning,
+  decorations.pathmorphing,
+  patterns,
+  calc
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% TIKZ FOR MODAL LOGICIANS %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{tikz}
+\usetikzlibrary{
+  arrows,
+  calc,
+  patterns,
+  positioning,
+  shapes
+}
+
+\usetikzlibrary{decorations.pathmorphing}
+\tikzset{
+  modal/.style={>=stealth',shorten >=1pt,shorten <=1pt,auto,
+  node distance=1.5cm},
+  % world/.style={circle,draw,minimum size=1cm,fill=gray!15},
+  world/.style={circle,draw,minimum size=1cm},
+  point/.style={circle,draw,fill=black,inner sep=0.5mm},
+  reflexive/.style={->,in=120,out=60,loop,looseness=#1},
+  reflexive/.default={5},
+  reflexive point/.style={->,in=135,out=45,loop,looseness=#1},
+  reflexive point/.default={25},
+}
+
+\tikzset{
+  reflexive above/.style={->,loop,in=120,out=60,looseness=#1},
+  reflexive above/.default={7},
+  reflexive below/.style={->,loop,in=240,out=300,looseness=#1},
+  reflexive below/.default={7},
+  reflexive left/.style={->,loop,in=150,out=210,looseness=#1},
+  reflexive left/.default={7},
+  reflexive right/.style={->,loop,in=30,out=330,looseness=#1},
+  reflexive right/.default={7}
+}
+
+% \tikzset{
+%   modal/.style={>=stealth',shorten >=1pt,shorten <=1pt,auto,
+%   node distance=1.5cm,semithick},
+%   world/.style={circle,draw,minimum size=.8cm,fill=gray!15},
+%   point/.style={circle,draw,fill=black,inner sep=0.5mm},
+%   reflexive/.style={->,in=120,out=60,loop,looseness=#1},
+%   reflexive/.default={5},
+%   reflexive point/.style={->,in=135,out=45,loop,looseness=#1},
+%   reflexive point/.default={25},
+% }
+
+\tikzset{
+  every picture/.style = {
+    >=stealth',
+    node distance = 1.5em and 3em,
+  }
+  ,
+  cross line/.style = {
+    preaction = {
+      draw=white,
+      -,
+      line width=4pt
+    }
+  }
+  ,
+  state/.style = {
+    rectangle,
+    rounded corners = 5pt,
+    font = \footnotesize,
+    draw,
+    minimum width = 1em,
+    minimum height = 1em
+  }
+  , % labels of states
+  label-state/.style = {
+    sloped,
+    font = \scriptsize,
+    label distance = -2pt
+  }
+  , % labels of edges
+  label-edge/.style = {
+    font = \scriptsize,    
+    label distance = -2pt
+  }
+}
+
+% The following commands are used to reduce the spacing aroung aligns
+%
+% \newcommand{\zerodisplayskips}{%
+%   \setlength{\abovedisplayskip}{5pt}%
+%   \setlength{\belowdisplayskip}{5pt}%
+%   \setlength{\abovedisplayshortskip}{5pt}%
+%   \setlength{\belowdisplayshortskip}{5pt}}
+% \appto{\normalsize}{\zerodisplayskips}
+% \appto{\small}{\zerodisplayskips}
+% \appto{\footnotesize}{\zerodisplayskips}
+
+%\usepackage{amsthm}
+% % after amsthm (to be used together with setspace)
+% \begingroup
+%     \makeatletter
+%     \@for\theoremstyle:=definition,remark,plain\do{%
+%         \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+%             \addtolength\thm@preskip\parskip
+%             }%
+%         }
+% \endgroup
+
+% Math calligraphic fonts
+%\usepackage[cal=boondox]{mathalfa}
+%\usepackage[cal=euler,frak=euler,scr=boondox,bb=pazo]{mathalfa}
+
+% \DeclareMathAlphabet{\mathantt}{OT1}{antt}{li}{it}
+% Zapf Chancery
+% \DeclareFontFamily{OT1}{pzc}{}
+% \DeclareFontShape{OT1}{pzc}{m}{it}%
+%              {<-> s * [1.100] pzcmi7t}{}
+% \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+%% TODO Notes
+%\usepackage[pdftex,dvipsnames]{xcolor}
+%\usepackage{todonotes}
+%\reversemarginpar
+%\newcommandx{\unsure}[2][1=]
+%	{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+%\newcommandx{\change}[2][1=]
+%	{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+%\newcommandx{\info}[2][1=]
+%	{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+%\newcommandx{\improvement}[2][1=]
+%	{\todo[linecolor=Plum,backgroundcolor=Plum!25,#1]{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% MISC OPERATIONS %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\let\Sec\S
+
+% \newcommand{\<}{\langle}
+% \renewcommand{\>}{\rangle}
+
+\renewcommand{\vec}{\bar}
+
+\newcommand{\bb}[1]{\mathbf{#1}}
+
+\newcommand{\size}[1]{{\mid}{#1}{\mid}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% DEFINITIONS, THEOREMS, AND ALL THAT %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \let\sigproof\proof\let\proof\relax
+% \let\sigendproof\endproof\let\endproof\relax
+
+% \let\proof\sigproof
+% \let\endproof\sigendproof
+
+% \theoremstyle{definition}
+% \newtheorem{definition}{Definition}[section]
+
+% \theoremstyle{definition}
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{property}{Property}[section]
+% \newtheorem{proposition}{Proposition}[section]
+% \newtheorem{lemma}{Lemma}[section]
+% \newtheorem{conjecture}{Conjecture}[section]
+% \newtheorem{corollary}{Corollary}[section]
+
+% \theoremstyle{remark}
+% \newtheorem{remark}{Remark}[section]
+% \newtheorem{example}{Example}[section]
+% \newtheorem{notation}{Notation}
+
+% \theoremstyle{remark}
+% \newtheorem*{proof}{Proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% CAPITAL GREEK %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% SET OPERATIONS %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclarePairedDelimiterX\setof[2]{\{}{\}}{\,#1 \;\delimsize\vert\; #2\,}
+\DeclarePairedDelimiterX\set[1]{\{}{\}}{#1}
+
+\DeclarePairedDelimiterX\tuple[1]{\langle}{\rangle}{#1}
+\DeclarePairedDelimiterX{\tset}[1]{\llbracket}{\rrbracket}{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% LOGICS %%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\props}{\mathsf{Prop}}
+\newcommand{\forms}{\mathsf{Form}}
+\newcommand{\mods}{\mathsf{Mod}}
+
+\newcommand{\liff}{\leftrightarrow}
+
+\newcommand{\noms}{\mathsf{Nom}}
+
+\newcommand{\sel}{\mathrm{s}}
+
+%\renewcommand{\S}{\mathrm{S}}
+%\newcommand{\W}{\mathrm{W}}
+%\newcommand{\R}{\mathrel{\mathrm{R}}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\D}{\mathrm{D}}
+\newcommand{\R}{\mathrm{R}}
+
+\newcommand{\pexp}{\mathsf{PExp}}
+\newcommand{\nexp}{\mathsf{NExp}}
+\newcommand{\interp}{\mathfrak{I}}
+\newcommand{\xpath}{\mathsf{DXPath}_{\rm 1}^{\rm n}}
+\newcommand{\xpathr}{\mathsf{DXPath}_{\rm R}^{\rm n}}
+\newcommand{\knaltone}{\mathsf{K}_{\rm n}\mathsf{Alt}_{\rm 1}}
+\newcommand{\alc}{\mathcal{ALC}}
+\newcommand{\alcd}{\mathcal{ALC(D)}}
+\newcommand{\alcpd}{\mathcal{ALCP(D)}}
+
+\newcommand{\sem}[1]{{#1}^{\interp}}
+\newcommand{\model}{\mathfrak{M}}
+\newcommand{\amodel}[1]{\mathfrak{#1}}
+\newcommand{\tbox}{\mathcal{T}}
+\newcommand{\abox}{\mathcal{A}}
+\newcommand{\kb}{\mathcal{K}}
+
+\DeclareMathOperator{\dom}{dom}
+
+\DeclareMathOperator{\naming}{nom}
+\DeclareMathOperator{\valuation}{V}
+\DeclareMathOperator{\data}{data}
+\DeclareMathOperator{\st}{\tau}
+\DeclareMathOperator{\nnf}{nnf}
+
+\newcommand{\cmps}{\mathsf{Cmp}}
+\newcommand{\cmp}{\mathsf{e}}
+
+\newcommand{\rulen}{\text{\rm \textbf{R}}}
+
+\newcommand{\cdom}{\mathcal{D}}
+\newcommand{\toppred}{\mathbf{1}}
+\newcommand{\botpred}{\mathbf{0}}
+\newcommand{\apath}{\mathsf{a}}
+\newcommand{\ppath}[1]{\mathsf{#1}}
+\newcommand{\tup}[1]{\langle{#1}\rangle}
+\newcommand{\truthset}[2]{\llbracket{#1}\rrbracket^{#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% CREF %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Abbreviated Cref
+\Crefname{definition}{Def.}{Defs.}
+\Crefname{figure}{Fig.}{Figs.}
+\Crefname{proposition}{Prop.}{Props.}
+\Crefname{equation}{Eq.}{Eqs.}
+\Crefname{property}{Prop.}{Props.}
+\Crefname{theorem}{Thm.}{Thms.}
+\Crefname{thm}{Thm.}{Thms.}
+\Crefname{example}{Ex.}{Exs.}
+\Crefname{section}{Sec.}{Secs.}
+\Crefname{fact}{Fact}{Facts}
+\Crefname{appendix}{App.}{App.}
+\Crefname{table}{Tab.}{Tabs.}
+\Crefname{algorithm}{Alg.}{Algs.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% COMPLEXITY CLASSES %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\np}{\textsf{NP}\xspace}
+\newcommand{\conp}{\textsf{coNP}\xspace}
+\newcommand{\pspace}{\textsf{PSpace}\xspace}
+\newcommand{\npspace}{\textsf{NPSpace}\xspace}
+\newcommand{\exptime}{\textsf{ExpTime}\xspace}
+\newcommand{\nexptime}{\textsf{NExpTime}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% FOR WRITTING NOTES %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{todonotes}
+%
+\newcommand{\raul}[1]{\todo[color=yellow!55]{{\bf Raul:} #1}\xspace}
+\newcommand{\bigraul}[1]{\todo[inline,color=yellow!55]{{\bf Raul:} #1}}
+%
+\newcommand{\val}[1]{\todo[color=blue!20]{{\bf Val:} #1}\xspace}
+\newcommand{\bigval}[1]{\todo[inline,color=blue!20]{{\bf Val:} #1}}
+%
+\newcommand{\carlos}[1]{\todo[color=red!20]{{\bf Carlos:} #1}\xspace}
+\newcommand{\bigcarlos}[1]{\todo[inline,color=red!20]{{\bf Carlos:} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%%%% ALGORITHMS %%%%%
+%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[longend,linesnumbered,ruled,vlined]{algorithm2e} 
+% \usepackage[noend]{algcompatible}
+% \usepackage{algpseudocode}
+
+\usepackage{xcolor}
+\newcommand{\thecommfont}[1]{\footnotesize\it\textcolor{lightgray}{#1}}
+\SetCommentSty{thecommfont}
+\SetKwComment{Comment}{$\rhd$\, }{\, $\lhd$}
+
+\renewcommand{\gets}{\coloneqq}
+
+\DeclareMathOperator{\satalg}{\textsc{Sat}}
+\DeclareMathOperator{\pathalg}{\textsc{Path}}
+
+\DeclareMathOperator{\PATHS}{\Pi}
+\DeclareMathOperator{\EQR}{E}
+\DeclareMathOperator{\NOM}{n}

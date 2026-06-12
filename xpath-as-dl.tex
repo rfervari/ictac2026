@@ -1,0 +1,140 @@
+\section{From $\xpath$ to $\alcd$}
+\label{sec:xp-as-alcd}
+
+In this section we show how to characterize $\xpath$ as a fragment of $\alcd$.
+The connection between the Boolean components is straightforward. Path expressions of $\xpath$ can be naturally translated as abstract paths.
+The interesting element in the translation is the use of concrete features to encode data values and the inclusion of an equality predicate in the concrete domain as a way to encode data comparisons. It turns out that to map $\xpath$ as a fragment of $\alcd$ we need very simple (admissible) concrete domains of the form $\cdom = \tup{\D, \{= , \neq, \botpred, \toppred\}}$; where $\D$ captures the universe of data values, and $=$ and $\neq$ capture equality and inequality on $\D$.
+We refer to these simple concrete domains as \emph{equality domains}.
+
+The translation from $\xpath$ expressions to $\alcd$ concepts is given below.
+
+\begin{definition} \label{def:translation} 
+    The \emph{translation function} $\st$ from node expressions of $\xpath$ into concepts of $\alcd$ is defined recursively as:
+    \begin{align*}
+        \st(\apath_i) &=f_i &   \st(p_i) &= C_i\\
+        \st(\alpha\beta) &= \st(\alpha)\st(\beta) &       
+        \st(\lnot \varphi) &= \lnot \st(\varphi) \\
+        \st(\tup{\alpha =_{\cmp_i}    \beta})&= \exists \st(\alpha)g_i, \st(\beta)g_i.{=}  &
+        \st(\varphi \land \psi) &= \st(\varphi) \sqcap \st(\psi) \\
+        \st(\tup{\alpha \neq_{\cmp_i}   \beta})&= \exists \st(\alpha)g_i, \st(\beta)g_i.{\neq} 
+    \end{align*}
+\end{definition}
+
+To show correctness of the translation, we need to put models of $\xpath$ and interpretations from~$\alcd$ in correspondence.
+
+\begin{definition} \label{def:model:as:interpretation}
+    Let $\model= \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$ be a data model. 
+    The equality domain $\cdom^{\model} = \tup{\D, \set{=, \neq,\botpred, \toppred}}$ is s.t.\
+        the extension of $=$ is equality on $\D$,
+        the extension of $\neq$ is inequality on $\D$,
+        the extension of $\botpred$ is $\emptyset$, and
+        the extension of $\toppred$ is $\D$.
+    Then, define $\interp_\model = \tup{ \N, {\cdot^{\interp_\model}}}$ where: 
+    \begin{enumerate}
+        \item 
+            ${C}_{i}^{\interp_\model} = \truthset{p_i}{\model}$
+        \item 
+            ${r_i}^{\interp_\model} = \emptyset$
+        \item 
+            ${f}_{i}^{\interp_\model} = \truthset{\apath_i}{\model}$ 
+        \item 
+            ${g}_{i}^{\interp_\model}(n) = \data_{\cmp_i}(n)$.
+    \end{enumerate}
+\end{definition}
+
+The following result states that data models of $\xpath$ can be seen as interpretations of $\alcd$ where $\cdom$ is an equality domain.
+
+\begin{lemma}\label{lemma:models-xp-dl}
+    $\interp_\model$ is a interpretation of $\alcd$ and $\cdom^\model$ is an admissible concrete domain.
+\end{lemma}
+
+The proof of the lemma above is straightforward, and enables us to establish the following correspondence between the two logics. 
+
+\begin{theorem}\label{th:translation-correctness}
+    Let $\varphi$ be a node expression, $\alpha$ a path expression, and $\model$ a data model, then $\truthset{\alpha}{\model}=\st(\alpha)^{\interp_\model}$ and $\truthset{\varphi}{\model}=\st(\varphi)^{\interp_\model}$. 
+\end{theorem}
+\begin{proof}
+    Let $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$, and $n \in \N$.
+    The proof is by induction on $\varphi$ and $\alpha$. Base cases and Boolean inductive cases are direct by definition. We show below the case for $=_\cmp$ data comparisons (the case of $\neq_\cmp$ being analogous).
+    \begin{description}
+        \item[($\varphi = \tup{\alpha =_{\cmp_i} \beta}$).] 
+                
+        We prove only the left-to-right direction. The right-to-left direction is analogous.
+        Let ${n \in \truthset{  \tup{\alpha =_{\cmp_i} \beta}}{\model}}$. 
+        By \Cref{def:xpath:semantics}, there are $x$ and $y$ s.t.\
+            $(n,x) \in \truthset{ \alpha}{\model}$,
+            $(n,y) \in  \truthset{ \beta}{\model}$, and
+            $\data_{\cmp_i}(x) = \data_{\cmp_i}(y)$. 
+        By \Cref{def:model:as:interpretation}, we know
+            (1) $(x,\data_{\cmp_i}(x)) \in (g_i)^{\interp_\model}$ and
+            (2) ${(y,\data_{\cmp_i}(y)) \in (g_i)^{\interp_\model}}$.
+        From the IH,
+            (3) ${(n,x) \in \st(\alpha)^{\interp_\model}}$ and
+            (4) $(n,y) \in \st(\beta)^{\interp_\model}$. 
+        Using (1) and (3),
+            we obtain $(n,\data_{\cmp_i}(x)) \in (\st(\alpha) g_i)^{\interp_\model}$. 
+        Using (2) and (4),
+            we obtain  $(n,\data_{\cmp_i}(y)) \in (\st(\beta) g_i)^{\interp_\model}$.
+        Therefore, $n \in (\exists \st(\alpha)g_i, \st(\beta)g_i. =)^{\interp_\model}$.
+        Finally, by \Cref{def:translation}, $n \in \st(\tup{\alpha =_{\cmp_i} \beta})^{\interp_\model}$. \qed 
+    \end{description}
+
+    % \begin{description}
+    %     \item[Base Cases.] \hfill
+    %         \begin{description}
+    %             \item[($\varphi = p_i$).]
+    %                 By \Cref{def:model:as:interpretation,def:translation},
+    %                 $\truthset{p_i}{\model} = C{_i^{\interp_\model}} = \st(p_i)^{\interp_\model}$.
+    %             \item[($\alpha= \apath_i$).] 
+    %                 By \Cref{def:model:as:interpretation,def:translation}, $\truthset{\apath_i}{\model} = f_i^{\interp_\model} = \st(\apath_i)^{\interp_\model}$.
+    %         \end{description} 
+    %     \item[Inductive Cases.] \   
+    %         \begin{description}
+    %             \item[($\varphi = \lnot \psi$).] 
+    %                 By \Cref{def:xpath:semantics},
+    %                 $\truthset{ \lnot \psi }{\model} = \N \setminus \truthset{\psi}{\model}$.
+    %                 Then, by IH, $\truthset{\psi}{\model} = \st(\psi)^{\interp_\model}$.
+    %                 It follows that, $\truthset{ \lnot \psi }{\model} = \N \setminus \st(\psi)^{\interp_\model}$.
+    %                 By \Cref{def:alcd:semantics}, $\truthset{ \lnot \psi }{\model} = \N \setminus \st(\psi)^{\interp_\model}$.
+    %                 Finally, by \Cref{def:translation}, $\truthset{ \lnot \psi }{\model} = \st( \lnot \psi)^{\interp_\model}$.
+
+    %                 % We have that $n \in \truthset{ \lnot \psi }{\model}$. Then, by \Cref{def:xpath:semantics}, ${n \in \N \setminus \truthset{ \psi}{\model}}$. By IH, $n \notin (\st(\psi))^{\interp_\model}$, thus ${n \in \N\setminus (\st(\psi))^{\interp_\model}}$. So, by \Cref{def:alcd:semantics}, ${n \in (\lnot \st(\psi))^{\interp_\model}}$. Therefore, by \Cref{def:translation}, ${n \in ( \st( \lnot \psi))^{\interp_\model}}$.
+
+    %             \item[($\varphi = \psi \land \chi$).]
+    %                 By \Cref{def:xpath:semantics}, 
+    %                 $\truthset{ \varphi \land \psi}{\model} = \truthset{ \psi}{\model} \cap \truthset{ \chi}{\model}$.
+    %                 Then, by IH, $\truthset{ \psi}{\model} = \st(\psi)^{\interp_\model}$ and $\truthset{ \chi}{\model} = \st(\chi)^{\interp_\model}$.
+    %                 It follows that, $\truthset{ \varphi \land \psi}{\model} = \st(\psi)^{\interp_\model} \cap \st(\chi)^{\interp_\model}$.
+    %                 Using \Cref{def:alcd:semantics}, we get $\truthset{ \varphi \land \psi}{\model} = (\st(\psi) \sqcap \st(\chi))^{\interp_\model}$.
+    %                 Finally, by \Cref{def:translation}, $\truthset{ \varphi \land \psi}{\model} = \st(\psi \land \chi)^{\interp_\model}$.
+    %                 % Suppose that $n \in \truthset{ \varphi \land \psi}{\model}$. Then, by \Cref{def:xpath:semantics}, ${n \in \truthset{ \psi}{\model}}$ and    ${n \in \truthset{ \chi}{\model}}$. By IH, $n \in \st(\psi)^{\interp_\model}$ and ${n \in \st(\chi)}^{\interp_\model}$. So, by \Cref{def:alcd:semantics}, $n \in (\st(\psi) \sqcap \st(\chi))^{\interp_\model}$. Therefore, by \Cref{def:translation}, $n \in (\st(\psi \land \chi))^{\model_\interp}$. 
+                
+    %             \item[($\varphi = \tup{\alpha =_{\cmp_i} \beta}$).] 
+                
+    %                 We prove only the left-to-right direction. The right-to-left direction is analogous.
+    %                 Let ${n \in \truthset{  \tup{\alpha =_{\cmp_i} \beta}}{\model}}$. 
+    %                 By \Cref{def:xpath:semantics}, there are $x$ and $y$ s.t.\
+    %                     $(n,x) \in \truthset{ \alpha}{\model}$,
+    %                     $(n,y) \in  \truthset{ \beta}{\model}$, and
+    %                     $\data_{\cmp_i}(x) = \data_{\cmp_i}(y)$. 
+    %                 By \Cref{def:model:as:interpretation}, we know
+    %                     (1) $(x,\data_{\cmp_i}(x)) \in (g_i)^{\interp_\model}$ and
+    %                     (2) ${(y,\data_{\cmp_i}(y)) \in (g_i)^{\interp_\model}}$.
+    %                 From the IH,
+    %                     (3) ${(n,x) \in \st(\alpha)^{\interp_\model}}$ and
+    %                     (4) $(n,y) \in \st(\beta)^{\interp_\model}$. 
+    %                 Using (1) and (3),
+    %                     we obtain $(n,\data_{\cmp_i}(x)) \in (\st(\alpha) g_i)^{\interp_\model}$. 
+    %                 Using (2) and (4),
+    %                     we obtain  $(n,\data_{\cmp_i}(y)) \in (\st(\beta) g_i)^{\interp_\model}$.
+    %                 Therefore, $n \in (\exists \st(\alpha)g_i, \st(\beta)g_i. =)^{\interp_\model}$.
+    %                 Finally, by \Cref{def:translation}, $n \in \st(\tup{\alpha =_{\cmp_i} \beta})^{\interp_\model}$.
+                    
+    %             \item [($\varphi = \tup{\alpha \neq_{\cmp_i} \beta}$).] 
+    %                 Analogous to the previous case. \qed
+    %         \end{description}
+    % \end{description}    
+\end{proof}
+
+The result in \Cref{th:translation-correctness} tells us that $\xpath$ forms a very simple fragment of $\alcd$.
+This result further makes it possible to define and study the properties of standard reasoning methods for $\xpath$ in a DL setting. In particular, we obtain complexity upper bounds for them, by~\Cref{prop:lutz}. However these bounds are not optimal. The next section is devoted to show tight complexity bounds for $\xpath$.

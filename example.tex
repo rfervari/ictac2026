@@ -1,0 +1,142 @@
+\begin{figure}[t!]
+	\begin{center}
+		\begin{tikzpicture}[
+			framed,
+			every node/.style={scale=0.8},
+			modal,%
+			node distance =.6cm and .8cm%
+			]
+			\node[world] (n1)
+			[label=150:{\footnotesize$n$}]
+			{$pqrs$};
+			
+			\node[world] (n2)
+			[label=180:{\footnotesize$m$}, below left=of n1]
+			{$pqrs$};
+			
+			\node[world] (n3)
+			[below right=of n1]
+			{$r$};
+			
+			\node[world] (n4)
+			[below=of n2]
+			{$r$};
+			
+			\node[world] (n5)
+			[left=of n4]
+			{$r$};
+			
+			\node[world] (n6)
+			[right=of n4]
+			{$r$};
+			
+			\node[world] (n7)
+			[fill=gray!15, label=150:{\footnotesize$n$}, right=3cm of n1]
+			{$pqr$};
+			
+			\node[world] (n8)
+			[fill=gray!15, label=180:{\footnotesize$m$}, below= of n7]
+			{$r$};
+			
+			\node (a)
+			[scale=1.2, below right=1.3cm of n4]
+			{\hspace*{-1.3cm}(a)};
+			\node
+			[scale=1.2, below=.2cm of n8]
+			{(b)};
+			
+			\path[->]
+			(n1)
+			edge[bend left]
+			node[midway, right]{\footnotesize$\mathsf{b}$}
+			(n2);
+			
+			\path[->]
+			(n1)
+			edge[bend right]
+			node[midway, left]{\footnotesize$\mathsf{a}$}
+			(n2);
+			
+			\path[->]
+			(n1)
+			edge
+			node[midway, right]{\footnotesize$\mathsf{c}$}
+			(n3);
+			
+			\path[->]
+			(n2)
+			edge
+			node[midway, right]{\footnotesize$\mathsf{b}$}
+			(n4);
+			\path[->]
+			(n2)
+			edge
+			node[midway, right]{\footnotesize$\mathsf{c}$}
+			(n6);
+			\path[->]
+			(n2)
+			edge
+			node[midway, left]{\footnotesize$\mathsf{a}$}
+			(n5);
+			
+			% \path[-]
+			% (n3)
+			% edge[dotted,bend left]
+			% node[midway, right]{\footnotesize$\neq_\cmp$}
+			% (n6);
+			\path[-]
+			(n4)
+			edge[dotted]
+			node[midway, above]{\footnotesize$=_\cmp$}
+			(n5);
+			\path[-]
+			(n2)
+			edge[dotted]
+			node[midway, below]{\footnotesize$=_\cmp$}
+			(n3);
+			\path[-]
+			(n5)
+			edge[dotted,bend right=40]
+			node[midway, below]{\footnotesize$=_\cmp$}
+			(n6);
+			
+			\path[->]
+			(n7)
+			edge[bend left]
+			node[midway, right]{\footnotesize$\mathsf{b}$}
+			(n8);
+			\path[->]
+			(n7)
+			edge[bend right]
+			node[midway, left]{\footnotesize$\mathsf{a}$}
+			(n8);
+		\end{tikzpicture}
+	\end{center}
+	\caption{Model and Selected Model}\label{fig:model:selected}
+	\medskip\medskip\medskip
+\end{figure}
+
+\begin{example}\label[example]{ex:selection-tbox}
+ 	   Consider the TBox
+        \[\tbox=\set{
+            p\doteq q\land r,
+            q\doteq \tup{\apath =_\cmp \ppath{b}},
+            r \doteq [\ppath{bc}\neq_\cmp\ppath{c}],
+            s\doteq \tup{\apath =_\cmp \ppath{c}}
+        },\]
+    and let $\model$ be the model in \Cref{fig:model:selected}(a).
+    In this figure, dotted arrows represent the relevant equality information (i.e., $\data_\cmp$ applied to those nodes returns equal values, and returns distinct values if applied to any other two different nodes).
+%    For the sake of clarity, we have chosen to avoid drawing self-loop dotted arrows on the nodes of the model.
+    Immediately, $\model \vDash \tbox$. 
+    For instance, ${\truthset{q}{\model} = \{n,m\} = \truthset{\tup{\apath =_\cmp \ppath{b}}}{\model}}$.
+    Similarly, if we take $\N$ to be the set of all nodes in $\model$, ${\truthset{r}{\model} = \N = \truthset{[\ppath{bc}\neq_\cmp\ppath{c}]}{\model}}$.
+    Notice also that this model establishes that $p$ is satisfiable w.r.t.\ $\tbox$.
+    This is easily verified since $n \in \truthset{p}{\model} = \truthset{q \land r}{\model} = \truthset{q}{\model} \cap \truthset{r}{\model} = \{n,m\}$.
+
+    In turn, the model in \Cref{fig:model:selected}(b) corresponds to $\model{\restriction}_{\sel(p,n)}$.
+	Intuitively, $\model{\restriction}_{\sel(p,n)}$ can be understood as the ``relevant part'' of $\model$ which is necessary to check the satisfiability of~$p$.
+	It is worth pointing out that such a  ``relevant part'' is not simply a restriction, it carries with it a change in valuations.
+	For instance, ${\truthset{s}{\model} = \truthset{\tup{\apath =_\cmp \ppath{c}}}{\model}} = \{n,m\}$, whereas ${\truthset{s}{\model{\restriction}_{\sel(p,n)}} = \truthset{\tup{\apath =_\cmp \ppath{c}}}{\model{\restriction}_{\sel(p,n)}}} = \emptyset$.
+	Notice however, that this change in valuations does not affect the satisfiability of $p$ w.r.t.~$\tbox$.
+	More precisely, it can be checked that $n \in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$ since $\truthset{p}{\model{\restriction}_{\sel(p,n)}} = \truthset{q \land r}{\model{\restriction}_{\sel(p,n)}} = \truthset{q}{\model{\restriction}_{\sel(p,n)}} \cap \truthset{r}{\model{\restriction}_{\sel(p,n)}} = \{n\}$.
+\end{example}

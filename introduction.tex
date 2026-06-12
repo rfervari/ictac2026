@@ -1,0 +1,74 @@
+\section{Introduction}
+
+Data graphs are, essentially, relational structures where nodes contain data values. This type of graph is the fundamental model underpinning two areas of great interest in knowledge representation and web data exchange: graph databases (see, e.g.,~\cite{AnglesG08,LV12}), and XML documents~\cite{xpath:w3c} (over the data graphs with a tree structure).
+For this reason, there is a realm of languages to formally describe and query data graphs.
+Two examples of this claim are Regular Queries~\cite{ReutterRV17}, a well-behaved fragment of the Datalog language, and XPath~\cite{xpath:w3c}, the most prominent approach for querying XML documents. The latter has received much attention lately, as it allows both the description of the topology of a data graph, and manipulation of its data values~\cite{BojanczykMSS09}.
+
+
+It has been argued that XPath can be seen, from a formal perspective, as a modal language~\cite{blackburn2001modal,blackburn06}. This makes it possible to define and use logical tools to reason about data graphs, see~e.g.~\cite{ICDT14Jair,AbriolaDFF17,Areces2017a,Figueira18,AbriolaBFF18,ArecesF21}. The navigational part of XPath is much like standard Modal Logics, such as Propositional Dynamic Logic (PDL)~\cite{HKT00}, since it describes the interconnection between nodes in the data graph via so-called \emph{path expressions}. For instance, the path expression $((\ppath{a}\ppath{b}) \cup \ppath{c})$ describes a connection established via the composition of an edge labelled by $\ppath{a}$ with one labelled by $\ppath{b}$, or via an edge labelled by $\ppath{c}$. Path expressions are used to build \emph{node expressions}.
+Particularly interesting are those describing data comparisons.
+These node expressions have the form $\tup{\alpha =_\cmp \beta}$, and state that starting from a given node of the graph, there is a node $n$ reached via an $\alpha$-path, and a node $m$ reached via a $\beta$-path (with $\alpha$ and $\beta$ path expressions), such that the data value contained in $n$ equals the data value of $m$, for a data comparison type $\cmp$.  The ML perspective has provided results like complexity analysis, expressivity bounds, reasoning algorithms, and complete axiomatizations (see~\cite{ICDT14Jair,AbriolaDFF17,Areces2017a,Figueira18,AbriolaBFF18,ArecesF21} for further details).
+
+Considerably less attention has been put in using XPath as a Description Logic (DL)~\cite{DLhandbook2003,DLbook17}. It is well-known that ML and DL are strongly related. Thus it is only natural to consider XPath from a DL perspective. In~\cite{KostylevRV14,Kost:xpat15}, first steps towards investigating XPath as an ontology language were taken. In particular they use DL-Lite reasoners in order to solve XPath queries. However, the fragment of XPath being considered contains only navigational expressivity, and leaves out of the picture data comparisons (a distinctive feature of XPath).
+
+In this article we take one step further, and consider a fragment of XPath featuring data equality and inequality comparisons, in a DL setting. Concretely, we will consider the fragment of XPath in which path expressions are the composition of simple steps (setting aside tests and non-deterministic choice).
+For node expressions we allow the full power of XPath with data equality and inequality. Moreover, path expressions will be interpreted as partial functions. We call this fragment $\xpath$, borrowing notation from the modal logic $\knaltone$~\cite{blackburn2001modal}, featuring $n$ modal operatos where each respective accessibility relation is a partial function. As we will discuss, these restrictions have an important computational effect, greatly reducing the complexity of different $\xpath$ reasoning tasks. 
+
+In spite of the imposed restrictions, $\xpath$ is expressive enough to model many interesting situations. %, as the example below illustrates.
+Consider a simplified graph database with information about bank accounts (\Cref{fig:data-graph}). This example is inspired by one presented in~\cite{AbriolaBFF18}.  Each node in the example contains information on persons, accounts and banks.  Each person has associated a data value $\mathsf{Id}$, and can own one or more accounts. In~\cite{AbriolaBFF18} this fact is represented by a binary relation connecting a person with her/his respective accounts. Here, the different accounts owned by a person are represented as partial functions labelled as \emph{primary account}, \emph{secondary account}, etc.\ (of course, this assumes there is a fix bound $n$ to the maximum number of accounts a person can have). Thus, a person's primary account is given by the functional relation $\mathsf{prim.acc}$, while the secondary account is given by the functional relation $\mathsf{sec.acc}$. Bank accounts have also an $\mathsf{Id}$ data value. For instance, the person whose $\mathsf{Id}$ is $\mathsf{6365988}$, has a primary account with $\mathsf{Id{:\ }  13209}$ and a secondary account with $\mathsf{Id{:\ } 004569}$. Account number $\mathsf{712340}$ is a joint account, this may be the case, e.g., for married people. Bank accounts belong to a unique bank, identified by a data value $\mathsf{Name}$. In our example there are two possible bank names, $\mathsf{IB}$ and $\mathsf{NB}$ (standing for International and National Bank, respectively). For a given person, we can express for instance whether the primary and secondary accounts, if exist, have different $\mathsf{Id}$ data value with the expression $[\mathsf{prim.account} \neq_{\mathsf{Id}} \mathsf{sec.acc}]$. Moreover, the expression $\tup{\mathsf{prim.account \ in} =_{\mathsf{Name}} \mathsf{sec.acc \ in }}$ states that a person has in fact a primary and a secondary account, both in the same bank. In the example, this is the case for the person with $\mathsf{Id{:\ }9001008}$.
+
+\begin{figure}[t]
+    \begin{center}
+       \begin{tikzpicture}[->, every node/.style={scale=0.825}]
+       
+        \node [state] (w1) at (0,0) {$\begin{array}{c}\mathsf{Person} \\  
+            \text{\sf Id: 6365988}\end{array}$};      
+        \node [state] (w2) at (3.75,0) {$\begin{array}{c}\mathsf{Person} \\  
+            \text{\sf Id: 9001008}\end{array}$}; 
+        \node [state] (w3) at (6,0) {$\begin{array}{c}\mathsf{Person} \\  
+            \text{\sf Id: 3405616}\end{array}$}; 
+        
+        \node [state] (ww1) at (-1,-1.5){$\begin{array}{c}\mathsf{Account} \\  
+            \text{\sf Id: 13209}\end{array}$}; 
+        \node [state] (ww2) at (1,-1.5){$\begin{array}{c}\mathsf{Account} \\  
+            \text{\sf Id: 004569}\end{array}$}; 
+        \node [state] (ww3) at (3.75,-1.5){$\begin{array}{c}\mathsf{Account} \\  
+            \text{\sf Id: 444900}\end{array}$}; 
+        \node [state] (ww4) at (6,-1.5){$\begin{array}{c}\mathsf{Account} \\  
+            \text{\sf Id: 712340}\end{array}$}; 
+       
+        \node [state] (www1) at (0,-3) {$\begin{array}{c}\mathsf{Bank} \\  
+            \text{\sf Name: IB}\end{array}$}; 
+        \node [state] (www2) at (3.75,-3) {$\begin{array}{c}\mathsf{Bank} \\  
+            \text{\sf Name: NB}\end{array}$}; 
+
+        \path (w1) edge node [label-edge, left] {$\mathsf{prim.acc}$} (ww1);
+        \path (w1) edge node [label-edge, right] {$\mathsf{sec.acc}$} (ww2);
+  
+        \path (w2) edge node [label-edge, left] {$\mathsf{prim.acc}$} (ww3);
+        \path (w2) edge node [label-edge, right] {$\mathsf{sec.acc}$} (ww4);
+        \path (w3) edge node [label-edge, right] {$\mathsf{prim.acc}$} (ww4);
+
+        \path (ww1) edge node [label-edge, left] {$\mathsf{in}$} (www1);
+        \path (ww2) edge node [label-edge, above right] {$\mathsf{in}$} (www2);
+        \path (ww3) edge node [label-edge, left] {$\mathsf{in}$} (www2);
+        \path (ww4) edge node [label-edge, above left] {$\mathsf{in}$} (www2);
+  
+      \end{tikzpicture}
+    \end{center}
+    \caption{Example of a graph-structured database.} 
+    \label{fig:data-graph}
+    \medskip\medskip\medskip
+  \end{figure}
+
+In addition to showing that $\xpath$ is expressive enough to capture interesting scenarios (particularly, with functional relations), the example above also serves to illustrate how this logic can be used in a DL setting. For instance, we can include definitions in a TBox and redefine long queries as short ones. To illustrate this point, a definition $\mathsf{elig} \doteq \tup{\mathsf{prim.account \ in} =_{\mathsf{Name}} \mathsf{sec.acc \ in }}$ could be used to define those persons that are eligible for certain bank benefits, whenever they have a primary and a secondary account in the same bank. With this definition, the new concept $\mathsf{elig}$ can be used as a succinct and more natural way to query the data graph, about such an eligibility criteria.
+
+One way to handle data structures like the ones just described in DL is via so-called concrete domains~\cite{BaaderH91}. However, it has been shown that the inclusion of concrete domains easily increment the computational complexity of DL reasoning tasks (see, e.g.,~\cite{Lutz02}). Thus, our first result is to show that $\xpath$ can be seen as a DL with a very simple concrete domain. As a result, we can transfer upper bounds for DL reasoning tasks in $\xpath$ as a by product. It turns out that these bounds are not tight. Our main technical result is to show that the problems of concept satisfiability, ABox consistency and concept satisfiability w.r.t.\ a TBox are all \np-complete. Such relatively low complexity bounds are surprising,
+as these reasoning tasks has been prove to be at least \pspace-hard, and in many cases \exptime-hard or above for many DL with simple concrete domains~\cite{Lutz1998-LUTDLW-2}.
+
+% Data structures like the ones just described are usually handled in the DL literature via so-called concrete domains~\cite{BaaderH91}. However, it is known that concrete domains easily increment the computational complexity of DL reasoning tasks (see e.g.~\cite{Lutz02}). Thus, our first result is to show that $\xpath$ can be seen as a DL with a very simple concrete domain. This enables us to obtain upper bounds for DL reasoning tasks in $\xpath$ as a by product. It turns out that these bounds are not tight. Our main technical result is to show that the problems of concept satisfiability, ABox consistency and concept satisfiability w.r.t. a TBox are all \np-complete. These problems are very typical in DL, and our results show that $\xpath$ can be considered a DL with a very simple concrete domain featuring data comparisons, enjoying a good computational behaviour.
+
+\paragraph*{Outline.} We start in~\Cref{sec:dxpath-f} by introducing the logic $\xpath$, i.e., a fragment of XPath intepreted over models with functional accessibility relations. In~\Cref{sec:alcd} we present the main ingredients of the DL with concrete domains $\alcd$, and recall some complexity results for common reasoning tasks. Then, in~\Cref{sec:xp-as-alcd} we define an equivalence preserving translation from $\xpath$ to $\alcd$ (with $\cdom$ a very simple concrete domain).
+This translation enables us to obtain some transference results, in particular, regarding the complexity of resasoning tasks. These results are refined in~\Cref{sec:complexity-xpath-f}.
+Therein, we establish tight complexity bounds for three typical problems in DL over $\xpath$. Precisely, we prove that concept satisfiability, ABox consistency and concept satisfiability w.r.t. a TBox are all \np-complete. Our method is based on a selection function to obtain a \emph{polynomial size model property}. %In~\Cref{sec:xpath-r} we extend our ideas and show that a relational version of XPath, called here $\xpathr$, is connected with the DL with generalized concrete domains $\alcpd$.
+ We end this work with some comments and future lines of research in~\Cref{sec:final}.

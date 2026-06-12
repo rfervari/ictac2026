@@ -1,0 +1,9 @@
+\section{Discussion}
+\label{sec:final}
+
+We investigated a fragment of the query language XPath from a Description Logic (DL) perspective. 
+The fragment under consideration (called $\xpath$) features data comparison and is interpreted over data graphs where accessibility relations are functional. We showed that even with this restriction we still model interesting scenarios. 
+
+The navigational fragment of XPath has been studied in a DL setting before~\cite{KostylevRV14,Kost:xpat15}, but to our knowledge this has not been done for fragments featauring data comparisons. We start by presenting a novel connection between $\xpath$ and the DL with concrete domains $\alcd$. This enables us not only to see $\xpath$ as a DL with a very simple concrete domain, but also to obtain complexity upper bounds for reasoning taks. Moreover, we showed that this bounds can be refined and thus $\xpath$ has good computational properties. Concretely, we proved that concept satisfiability, ABox consistency and concept satisfiability w.r.t. a TBox are all \np-complete problems. This is is contrast with DL with concrete domains in general, where the complexity is usually quite high. 
+
+There are still several lines of work to be explored. Firstly, it would be interesting to further explore the relational version of XPath (called here $\xpathr$) in a DL setting, and obtain tight complexity bounds. Secondly, we would like to extend our methods and results to related logics, as e.g. fragments of the SHACL language~\cite{Ortiz23,Ahmetaj0S23}. Finally, we would like to implement XPath reasoners for the tasks we investigated.

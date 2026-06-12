@@ -1,0 +1,443 @@
+\section{Complexity of Reasoning in $\xpath$}
+\label{sec:complexity-xpath-f}
+
+In this section we explore the computational complexity of some typical DL-reasoning tasks for the case of $\xpath$.
+We pay attention to the complexity of \emph{concept satisfiability},  ABox \emph{consistency} and \emph{concept satisfiability w.r.t. acyclic TBoxes} for $\xpath$ expressions. In particular, we will show that $\xpath$ can be actually seen as a fragment of $alcd$ enjoying nice computational properties.
+%It is worth pointing out that, since~\Cref{th:translation-correctness} permits us to see $\xpath$ as a fragment of $\alcd$, the results in~\Cref{prop:lutz} easily provide upper bounds for the reasoning tasks just mentioned.
+%As it turns out, these upper bounds are not optimal.
+%We show that the $\xpath$ fragment of $\alcd$ has lower complexity bounds.
+
+\subsection{$\xpath$ satisfiability}
+\label{subsec:xpath-f-sat}
+
+%Our perspective in this paper is to seeing $\xpath$ as a description logic. In particular, we present it as a fragment of $\alcd$ enjoying some nice computational properties. 
+We start by proving that the satisfiability problem for node expressions in $\xpath$ (referred to as \emph{concept satisfiability} in the DL terminology) is $\np$-complete.
+The argument of the proof is akin to that for the modal logic $\knaltone$. %(i.e., the multi-modal logic over $n$ functional relations).
+The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal}). In what follows, we will use $*$ to refer indistinctly to $=$ or $\neq$ in data comparisons.
+
+\begin{definition}
+    \label{def:selection}
+    Let  $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$ be a data model, and $n\in\N$. The \emph{selection function} $\sel$ is recursively defined over path expressions and node expressions as:
+    \[
+    \begin{array}{@{\ }l@{\ }l}
+        \sel(\apath,n) & = \begin{cases}
+            \begin{array}{l@{\quad\quad\quad\quad}l}
+                \{n\}  & \text{if $\R_{\apath}(n)$ is undefined}\\
+                \{n,\R_\apath(n)\} & \text{if $\R_{\apath}(n)$ is defined} 
+            \end{array}
+            \end{cases} 
+            \\[10pt] 
+        \sel(\apath\alpha,n) & = \begin{cases}
+            \begin{array}{ll}
+                \{n\} & \text{if $\R_{\apath}(n)$ is undefined} \\
+                \{n\} \cup \sel(\alpha,\R_\apath(n)) & \text{if $\R_{\apath}(n)$ is defined}
+            \end{array}
+            \end{cases}
+            \\[10pt] 
+        \sel(p,n) & = \{n\} \\
+        \sel(\neg\varphi,n) & = \sel(\varphi,n) \\
+        \sel(\varphi\land\psi,n) & = \sel(\varphi,n) \cup \sel(\psi,n) \\
+        \sel(\tup{\alpha *_{\cmp}\beta},n) & = \sel(\alpha,n) \cup \sel(\beta,n) 
+    \end{array}
+    \]
+    \noindent
+    Then, define $\model{\restriction}_{\sel(\varphi,n)}\,{=}\,\tup{ \N', \D, \set{\R'_{\apath}}_{\apath \in \mods}, \valuation',\set{\data'_\cmp}_{\cmp \in \cmps} }$ as:
+    \begin{enumerate}
+        \item 
+            $\N' = \N \cap \sel(\varphi,n)$;
+        % \item 
+        %     $\D = \{0\} \cup \bigcup\setof{\N/{\equiv_\cmp}}{\text{`${*_\cmp}$' appears in $\tbox$}}$;
+        \item 
+            for all $\apath \in \mods$, $\R'_{\apath} = \R_{\apath} \cap (\N' \times \N')$
+        \item $\valuation: \props \to 2^{\N'}$ is s.t.:
+            $\V'(p) = \V(p) \cap \N'$
+        \item 
+        for all $\cmp \in \cmps$, $\data'_\cmp:  \N' \to \D$ is s.t.: $\data'_\cmp(n) = \data_\cmp(n)$.
+    \end{enumerate}
+    We refer to $\model{\restriction}_{\sel(\varphi,n)}$ as the \emph{selected} data model.
+\end{definition}
+
+In a nutshell, given a model, $\sel$ selects the relevant pieces on which to evaluate a given node expression. The next lemma states that this selection preserves the truth value of a node expression.
+
+\begin{lemma}\label{lemma:selection}
+    Let $\varphi$ be a node expression.
+    Moreover, let ${\model = \tup{\N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps}}}$ be s.t.\ ${\truthset{\varphi}{\model}\neq\emptyset}$.
+    Then, for all $\{n,m\}\subseteq\N$, all path expressions $\alpha$, and all node expressions~$\varphi$, the following statements are true:
+    \begin{enumerate}[1.]
+        \item $(n,m)\in\truthset{\alpha}{\model}$ iff $(n,m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$;
+        \item $n\in\truthset{\varphi}{\model}$ iff $n\in\truthset{\psi}{\model{\restriction}_{\sel(\varphi,n)}}$. %\model{\restriction}_{\sel(\varphi,n)}
+    \end{enumerate} 
+    Moreover, $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$.
+\end{lemma}
+
+\begin{proof}
+    The proof is by induction on $\alpha$ and $\varphi$.
+    \begin{description}  
+    \item[Base cases.] \
+        \begin{description}
+            \item[($\alpha = \apath$).]
+            Left-to-right: let $(n,m)\in\truthset{\apath}{\model}$, i.e., $(n,m)\in\R_\apath$.
+            We know $\sel(\apath,n)=\set{n,\R_\apath(m)} = \set{n,m}$.
+            Then, $(n,m)\in (\R_\apath \cap ((\sel(\apath,n))^2))$.
+            So, $(n,m)\in\truthset{\apath}{\model{\restriction}_{\sel(\apath,n)}}$. The right-to-left direction is similar.
+            
+            \item[($\varphi = p$).]
+            Left-to-right: let $n\in\truthset{p}{\model}$, i.e., $n\in\V(p)$.
+            Then, $n\in(\V(p) \cap \sel(p,n))$.
+            So, $n\in\truthset{p}{\model{\restriction}_{\sel(p,n)}}$.
+            The right-to-left direction is similar.
+        \end{description}
+    \item[Inductive cases.] \
+        \begin{description}
+
+            \item[($\alpha = \apath\alpha$).]
+            Let $(n,m)\in\truthset{\apath\alpha}{\model}$.
+            We know $(n,\R_\apath(n))\in\R_\apath$ and $(\R_\apath(n),m)\in\truthset{\alpha}{\model}$.
+            The former implies $(n,\R_\apath(n))\in(\R_\apath \cap \sel(\apath,n)^2)$. By the IH, the latter implies $(\R_\apath(n),m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$.
+            From the def.~of $\sel$, we know $\sel(\apath\alpha,n)=\set{n}\cup\sel(\alpha,\R_\apath(n))$.
+            Then, $(n,m)\in(\R_\apath \cap \sel(\apath\alpha,n)^2)$.
+            Therefore, $(n,m)\in\truthset{\apath\alpha}{\model{\restriction}_{\sel(\apath\alpha,n)}}$.
+            The other direction is similar.
+
+            \item[($\varphi = \neg\psi$ and $\varphi = \psi\wedge\chi$).]
+            Immediate from the IH.
+            
+            \item[($\varphi = \tup{\alpha=_\cmp\beta}$).]
+            Let $n\in\truthset{\tup{\alpha=_{\cmp}\beta}}{\model}$.
+            We know there are $m$, $m'$ s.t.:
+                $(n,m)\in\truthset{\alpha}{\model}$,
+                ${(n,m')\in\truthset{\beta}{\model}}$, and
+                ${\data_\cmp(m)=\data_\cmp(m')}$.
+            By IH,
+                $(n,m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$, and
+                $(n,m')\in\truthset{\beta}{\model{\restriction}_{\sel(\beta,n)}}$.
+            From the def.~of $\sel$, it follows that $\{n,m,m'\}\subseteq\sel(\tup{\alpha=_{\cmp}\beta},n)$.
+            Then, $n\in\truthset{\tup{\alpha=_\cmp\beta}}{\model{\restriction}_{\sel(\tup{\alpha=_\cmp\beta},n)}}$.
+            The other direction is similar.
+                        
+            \item[($\varphi = \tup{\alpha\neq_\cmp\beta}$).]
+            Identical to the one above.   
+        \end{description}     
+    \end{description}
+
+    It remains to show that  $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$, where $\size{\varphi}$ is the number of modal symbols of $\varphi$. The proof is by induction on $\varphi$.
+    Notice that~$\sel$ adds new nodes only while ``breaking down'' path expressions.
+    More precisely, $\sel$ adds only one node per each modal symbol in the recursive case.
+    The interesting case is $\varphi = \tup{\alpha*_{\cmp}\beta}$.
+    In this case, we have $\size{\sel(\varphi, n)} \leq \size{\sel(\alpha, n)} + \size{\sel(\beta, n)}$.
+    Immediately, $\size{\sel(\alpha, n)} \leq \size{\alpha}+1$, and $\size{\sel(\beta, n)} \leq \size{\beta}+1$.
+    In both cases the $+1$ corresponds to the node $n$ they have in common.
+    Thus, $\size{\sel(\varphi,n)} \leq \size{\varphi}+1$ as desired.
+    \qed
+\end{proof}
+
+We are now in position to characterize the complexity of the satisfiability problem for $\xpath$.
+
+\begin{theorem}\label{theorem:xp-sat-np-complete}
+    The satisfiability problem for node expressions in $\xpath$ is $\np$-complete.
+\end{theorem}
+
+\begin{proof}
+    Given a node expression $\varphi$, if it is satisfiable by~\Cref{lemma:selection} we can guess a data model $\model$ that is polynomial on $\size{\varphi}$, and check whether $\truthset{\varphi}{\model}\neq\emptyset$. The last check can be done in polynomial time (see the result in~\cite{ArecesF21}). Moreover, checking that $\model$ is a proper data model can also be done in polynomial time. Thus, the satisfiability problem for $\xpath$ in \np.
+    Hardness is immediate from the satisfiability problem of propositional logic.
+    \qed
+\end{proof}
+
+
+\subsection{Reasoning with $\xpath$ ABoxes and TBoxes}
+\label{subsec:xpath-f-kb}
+
+%We have already established that the satisfiability problem for $\xpath$ is (only) \np-complete, a low complexity compared to what it is usual in $\alcd$.
+We now turn to ABox consistency, and concept satisfiability w.r.t.\ acyclic TBoxes.
+In what follows, we adopt the DL terminology and refer to proposition symbols as concept names and to node expressions as concepts. We also consider a countable set of \emph{nominals} $\noms$, which corresponds in the DL terminology to \emph{individual names}. 
+We begin with some preliminary definitions.
+
+\begin{definition}\label{def:xp:tbox}
+    A \emph{terminological box} (\emph{TBox}) in $\xpath$ is a set $\tbox$ of expressions of the form $p \doteq \psi$, where $p$ is a concept name, and $\psi$ is a concept.
+    We call $p \doteq \psi$ a \emph{concept definition}.
+    We say that a concept name $p$ \emph{directly uses} a concept $\varphi$ if there is a concept definition $p \doteq \psi$ such that $\varphi$ appears in $\psi$.
+    We say that $p$ \emph{uses} $\varphi$ iff $\varphi$ is in the transtive closure of the `directly uses' relation. 
+    Moreover, $\tbox$ is \emph{acyclic} iff
+    \begin{enumerate}
+        \item no concept name uses itself, and
+        \item the left-side of the concept definitions are all pair-wise disjoint.
+    \end{enumerate}
+    If $\tbox$ is acyclic and ${p \doteq \varphi} \in \tbox$, we say that $\varphi$ defines $p$ and call $\varphi$ the definition of $p$.
+\end{definition}
+
+TBoxes describe general relations between the concepts, in this case, providing definitions that can be globally assumed. On the other hand, ABoxes describe properties about particular individuals. 
+
+\begin{definition}\label{def:xp:abox}
+    An \emph{assertion box} (\emph{ABox}) in $\xpath$ is a set $\abox$ of expressions of the form:
+    \[ 
+        i:\varphi, \quad (i,j):\alpha, \quad i=_\cmp j, \quad \text{ or } \  i\neq_\cmp j,
+    \]
+    where $i,j\in\noms$, and $\alpha\in\mods^+$.
+\end{definition}
+
+To investigate reasoning problems involving ABoxes and TBoxes, we introduce how to interpret them on a model. Note that for ABoxes we need to extend models with an interpretation for nominals.
+
+\begin{definition}\label{def:xp-kb-semantics}
+    The satisfaction relation for TBoxes is given w.r.t.\ a data model ${\model= \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }}$, and for ABoxes w.r.t.\ $\model$ and a function ${\naming : \noms \to \N}$.
+    More precisely:
+   % The semantics for a knowledge base w.r.t. $\model$ and $g$ extends~\Cref{def:xpath:semantics} as:
+    \[
+        \begin{array}{l c l}
+            \model \vDash p \doteq \psi & \text{ iff } & \truthset{p}{\model} = \truthset{\psi}{\model} \\ 
+            \model,\naming \vDash i:\varphi & \text{ iff } & \naming(i) \in \truthset{\varphi}{\model} \\
+            \model,\naming \vDash (i,j):\alpha  & \text{ iff } &  (\naming(i),\naming(j)) \in \truthset{\alpha}{\model} \\ 
+            \model,\naming \vDash i=_\cmp j & \text{ iff } & \data_\cmp(\naming(i)) = \data_\cmp(\naming(j)) \\
+            \model,\naming \vDash i\neq_\cmp j & \text{ iff } & \data_\cmp(\naming(i)) \neq \data_\cmp(\naming(j)).
+        \end{array}
+    \]
+    Let $\tbox$ be a TBox.
+    We write $\model \vDash \tbox$ iff for all ${p \doteq \varphi} \in \tbox$, it follows that $\model \vDash {p \doteq \varphi}$.
+   % We call $\tbox$ \emph{consistent} iff there is $\model$ s.t.\ $\model \vDash \tbox$.
+    We write $\model, \naming \vDash \abox$ iff for all $\xi \in \abox$, ${\model, \naming \vDash \xi}$.
+    We say that an ABox $\abox$ is \emph{consistent} iff exists $\model,\naming$ such that  $\model,\naming \vDash \abox$.
+    %We say that a concept $\varphi$ is \emph{satisfiable w.r.t. a TBox $\tbox$} iff exists $\model,\naming$ s.t.\ $\model,\naming\models\tbox$ and $\truthset{\varphi}{\model}\neq\emptyset$.
+\end{definition}
+
+Reasoning with TBoxes and ABoxes is \emph{global}, i.e., expresions are either true or false everywhere in the model.
+This differs from the \emph{local} reasoning from~\Cref{def:xpath:semantics}, in which the truth or falsity of an expression depends on the particular node being considered. This jump from local reasoning to global reasoning, common in DL, in many cases, causes  a jump in the complexity of the reasoning tasks. In the rest of this section we analyze the effects of adding TBoxes and ABoxes in $\xpath$ from a computational complexity perspective.
+
+The first result in this section brings back into the picture the selection function $\sel$ in~\Cref{def:selection}.
+It is not hard to see how $\sel$ can be extended to handle nominals. We would simply need to add cases $\sel(i:\varphi, n) = \sel(\varphi,\naming(i))$ and $\sel((i,j):\alpha, n) = \sel(\alpha,\naming(i))$.
+With this new definition of the selection function, we obtain the result below by adapting the argument used in the proof of \Cref{lemma:selection}.
+
+\begin{theorem}\label{th:abox-xp-np}
+    The ABox consistency problem for $\xpath$ is \np-complete.
+\end{theorem}
+
+Let us now turn our attention to concept satisfiability w.r.t. a TBox.
+We begin by making clear the problem we will tackle.
+
+\begin{definition}
+    We say that a concept name $p$ is \emph{satisfiable} w.r.t.\ a TBox $\tbox$ iff there is $\model$ such that $\model\models\tbox$ and $\truthset{p}{\model}\neq\emptyset$.
+\end{definition}
+
+It is easily seen that the problem of concept name satisfiability can be extended to the problem of \emph{arbitrary concept satisfiability}.
+More precisely, an arbitrary concept $\varphi$ is \emph{satisfiable} w.r.t.\ a TBox $\tbox$ iff there is  $\model$ s.t.\ $\model\models\tbox$ and $\truthset{\varphi}{\model}\neq\emptyset$.
+This problem of arbitrary concept satisfiability can be reformulated as a problem of concept name satisfiability.
+It can be proven that $\varphi$ is satisfiable w.r.t.\ $\tbox$ iff $p$ is satisfiable w.r.t.\ $\tbox \cup \{p \doteq \varphi\}$, for $p$ a new concept name, i.e., $p$ not in $\tbox$ and $\varphi$.
+The following observation is also important.
+Suppose that we wish to check whether a concept name $p$ is satisfiable w.r.t.\ a TBox $\tbox$.
+W.l.o.g., we can always assume there is ${p \doteq \varphi} \in \tbox$.
+It can be proven that if there is no ${p \doteq \varphi} \in \tbox$, then, $p$ is satisfiable w.r.t.\ $\tbox$ iff $p$ is satisfiable w.r.t.\ $\tbox \cup \{p \doteq q \lor \lnot q\}$, for $q$ a new concept name.
+
+The problem of concept name satisfiability w.r.t.\ acyclic TBoxes assumes the TBox is \emph{acyclic}.
+This restriction to acyclic TBoxes allows us to reformulate the definition of the selection function in \Cref{def:selection}, and of \emph{selected model}, to obtain an $\np$ upper bound.
+The crucial point in this reformulation is the definition of the valuation function for the selected model, taking into consideration the TBox. 
+We make these ideas precise below.
+
+%We begin with an initial step and put the TBox into a \emph{simple} form.
+
+\begin{definition}\label{def:simple-tbox}
+    We call a TBox $\tbox$ \emph{simple} iff it is acyclic and:
+    \begin{enumerate}
+        \item for all $p \doteq \psi\in\tbox$, $\psi \in \{\neg q, q\land r, q\lor r, \tup{\alpha*_\cmp \beta}, \lnot\tup{\alpha*_{\cmp}\beta}\}$;
+        \item for all $\{p\doteq\lnot{q}, p'\doteq\psi\}\subseteq\tbox$, we have $p'\neq q$,
+    \end{enumerate} 
+    where $p,q,r,p'\in\props$.
+\end{definition}
+
+% Note that we assumed that every definition $p\doteq \psi$ in the TBox is s.t.\ $p\in\props$.
+% This assumption is grounded on the fact that we are restricting ourselves to acyclic TBoxes (see e.g.~\cite{DLbook17} for more details). 
+Simple TBoxes form an interesting class of acyclic TBoxes, since, as stated in \Cref{lemma:ext-tbox}, they preserve ``size'' and ``meaning'' of acyclic TBoxes.
+%, and can be used to represent the unfolding of definitions into ABoxes avoiding an exponential blowup in size.
+
+\begin{lemma}\label{lemma:ext-tbox}
+    Any acyclic TBox $\tbox$ can be converted in polynomial time into a simple TBox $\tbox'$ s.t.\ for all $\model \vDash \tbox$, there is ${\model' \vDash \tbox'}$ agreeing with $\model$ on all concept names in $\tbox$, and viceversa.
+\end{lemma}
+\begin{proof}
+    The proof follows similar arguments as that for $\alc$ found in~\cite{Lutz02}, but it needs to be extended for the case of data comparisons.
+    Let $\nnf(\psi)$ be the \emph{negation normal form} (NNF) of $\psi$, i.e., negation only occurs at the atomic level.  Every node expression in $\xpath$ can be transformed into a node expression in NNF in linear time. 
+    Apply the following rules until no more rules can be applied:
+    
+    \begin{description}
+        \item[Rule 1: Eliminate non-atomic negations.]
+        Convert all $p\doteq\psi\in\tbox$ into $p\doteq\nnf(\psi)$.
+        Then, add $p'\doteq\nnf(\neg\psi)$ for $p'\in\props$ new, and replace each occurrence of $\lnot{p}$ with $p'$ in $\tbox$.
+        Since $\alpha$ and $\beta$ do not contain negations, $\neg\tup{\alpha=_\cmp\beta}$ is already in NNF.
+ 
+        \item[Rule 2: Break definitions.]
+        For every $\varphi$ that is not a concept name, convert all ${p\doteq\varphi\wedge\psi} \in\tbox$ into $p\doteq p'\land\psi$, and add $p'\doteq\varphi$, where $p' \in \props$ is new each time. Do the same for $p\doteq\psi\wedge\varphi$ and for disjunctions.
+
+        \item[Rule 3: Eliminate redundant definitions.]
+        Eliminate all $p \doteq p'$, and replace each occurrence of $p'$ with $p$ in $\tbox$.
+    \end{description}
+    The rules 1 to 3 above terminate in polynomial time and create a new TBox $\tbox'$ which is polynomial on the size of $\tbox$. 
+    It is immediate to see that the obtained TBox $\tbox'$ is simple.
+    The proof that for every data model $\model$ of $\tbox$ there is a data model $\model'$ of $\tbox'$ that agrees with $\model$ on all the proposition symbols used in $\tbox$, and viceversa, builds on the argument found in~\cite{DLbook17,Lutz02}.
+    \qed
+\end{proof}
+
+The result in \Cref{lemma:ext-tbox} tells us that in the context of acyclic TBoxes there is no loss of generality in working with simple TBoxes. 
+We are now in a position to define the selection function needed to establish the main result of this section.
+
+%%%%% SELECTION %%%%%
+
+\begin{definition}
+    \label{def:selection:tbox}
+    Let $\tbox$ be a simple TBox.
+    For every data model $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$ and $n\in\N$,
+    define the \emph{selection function} $\sel$ exactly as in~\Cref{def:selection} except that:
+    \[
+    \begin{array}{@{\ }l@{\,}l@{}@{\ }l}
+        \sel(\apath,n) & = \begin{cases}
+            \begin{array}{l@{\quad\quad\quad~~}l}
+                \{n\}  & \text{if $\R_{\apath}(n)$ is undefined}\\
+                \{n,\R_\apath(n)\} & \text{if $\R_{\apath}(n)$ is defined} \\
+            \end{array}
+            \end{cases} 
+            \\[10pt] 
+        \sel(\apath\alpha,n) & = \begin{cases}
+            \begin{array}{l@{~}@{~}l}
+                \{n\} & \text{if $\R_{\apath}(n)$ is undefined} \\
+                \{n\} \cup \sel(\alpha,\R_\apath(n)) & \text{if $\R_{\apath}(n)$ is defined}
+            \end{array}
+            \end{cases}                     
+            \\[10pt] 
+        \sel(p,n) & = \begin{cases}
+        \begin{array}{l@{\quad\quad\quad\quad\quad~}l}
+            \{n\} & \text{if there is no ${p \doteq \psi} \in \tbox$} \\
+            \sel(\psi, n) & \text{if there is ${p \doteq \psi} \in \tbox$} 
+        \end{array}
+        \end{cases}
+        \\[10pt] 
+        \sel(\neg\varphi,n) & = \sel(\varphi,n) \\
+        \sel(\varphi\land\psi,n) & = \sel(\varphi,n) \cup \sel(\psi,n) \\
+        \sel(\varphi\lor\psi,n) & = \sel(\varphi,n) \cup \sel(\psi,n) \\
+        \sel(\tup{\alpha *_{\cmp}\beta},n) & = \sel(\alpha,n) \cup \sel(\beta,n).
+    \end{array}
+    \]
+    Then, define $\model{\restriction}_{\sel(\varphi,n)}\,{=}\,\tup{ \N', \D, \set{\R'_{\apath}}_{\apath \in \mods}, \valuation',\set{\data'_\cmp}_{\cmp \in \cmps} }$ as:
+    \begin{enumerate}
+        \item 
+            $\N' = \N \cap \sel(\varphi,n)$;
+        % \item 
+        %     $\D = \{0\} \cup \bigcup\setof{\N/{\equiv_\cmp}}{\text{`${*_\cmp}$' appears in $\tbox$}}$;
+        \item 
+            for all $\apath \in \mods$, $\R'_{\apath} = \R_{\apath} \cap (\N' \times \N')$
+        \item $\valuation: \props \to 2^{\N'}$ is s.t.:
+        \begin{align*}
+            \V'(p) &=
+                \begin{cases}
+                    \{n\}
+                        & \text{if there is no ${p \doteq \psi} \in \tbox$} \\
+                    \emptyset
+                        & \text{if there is ${q \doteq \lnot p} \in \tbox$} \\
+                    \truthset{\tup{\alpha *_\cmp \beta}}{\model} \cap \N'
+                        & \text{if there is ${p \doteq \tup{\alpha *_\cmp \beta}} \in \tbox$} \\
+                    \truthset{\neg[\alpha *_\cmp \beta]}{\model} \cap \N'
+                        & \text{if there is ${p \doteq [\alpha *_\cmp \beta]} \in \tbox$} \\
+                    \N' \setminus \V'(q)
+                        & \text{if there is ${p \doteq \lnot q} \in \tbox$} \\
+                    \V'(q) \cap \V'(q')
+                        & \text{if there is ${p \doteq q \land q'} \in \tbox$} \\
+                    \V'(q) \cup \V(q')
+                        & \text{if there is ${p \doteq q \lor q'} \in \tbox$}
+                \end{cases}
+        \end{align*}
+        \item 
+        for all $\cmp \in \cmps$, $\data'_\cmp:  \N' \to \D$ is s.t.: $\data'_\cmp(n) = \data_\cmp(n)$.
+    \end{enumerate}
+    %Note that the recursion in $\V'$ is well-founded since $\tbox$ is simple.
+    We call $\model{\restriction}_{\sel(\varphi,n)}$ the \emph{selected} data model.
+\end{definition}
+
+The first distinction between the definition above and the one in~\Cref{def:selection} is the case of propositional symbols. Here, if a propositional symbol $p$ is such that $p\doteq\psi \in \tbox$, we need to proceed in unfolding such a definition recursively. Even though a TBox provides global information about the model, we only unfold the definitions that are relevant from the evaluation point, thus, we only take into  account definitions in the TBox locally. The second distinction is a minor one, and concerns the definition of a case of disjunction. We need this case now, as in simple TBoxes we deal with formulas in negation normal form. 
+
+It is important to notice how, contrary to the simplicity in the definition of the selected model in \Cref{def:selection}, the definition of the valuation function for the selected model for the case of TBoxes requires some ingenuity and takes advantage of the structure of the TBox.
+In particular, the structure of the TBox guarantees that the recursive definition of $\V'$ is well-founded.
+More interesting is the definition of the base cases for $\V'$.
+These distinguish the cases in which a concept name~$p$ is defined in terms of a diamond or box comparison, or it is undefined.
+In the latter case, it further distinguishes whether~$p$ appears negated or not.
+The definition of the valuation for $p$ in each of these cases plays a crucial role in the proof of the following result.
+
+\begin{lemma}\label{lemma:sel:tbox}
+    Let $\tbox \cup \{p \doteq \psi\}$ be a simple TBox.
+    Moreover, let $\model$ be s.t.\ $\model \vDash \tbox$ and $n\in \truthset{p}{\model}$.
+    The following are true statements:
+    \begin{enumerate}[1.]
+        \item $\model{\restriction}_{\sel(p,n)} \vDash \tbox$,
+        \item $n\in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$, and 
+        \item  $|\sel(p,n)|$ is polynomial in $\size{\tbox}$.
+    \end{enumerate}
+\end{lemma}
+\begin{proof}   
+%    To simplify notation let $\model' = \model{\restriction}_{\sel(p,n)}$.
+    Item 1 is immediate. From the way in which $\V'$ is defined, we know that for each concept name $q$ s.t.\ ${q \doteq \psi} \in \tbox$  it happens that ${\truthset{q}{\model{\restriction}_{\sel(p,n)}} = \truthset{\psi}{\model{\restriction}_{\sel(p,n)}}}$.
+    This establishes ${\model{\restriction}_{\sel(p,n)}} \vDash \tbox$.
+
+    The following terminology is useful for proving Items 2 and 3.
+    We call $\psi$ a \emph{basic} definition of $q$ iff $\psi \in \{\lnot r, \tup{\alpha *_\cmp \beta}, [\alpha *_\cmp \beta]\}$; otherwise we call $\psi$ a \emph{compound} definition of $q$.
+    The proof of Items 2 and 3 are by induction on the structure of the definition $\psi$ of $p$.
+
+    For Item 2:
+    \begin{description}
+        \item[Bases cases.] \
+        \begin{description}
+            \setlength{\itemsep}{0pt}
+            \item[($\psi\in\set{\tup{\alpha*_\cmp\beta},[\alpha*_\cmp\beta]}$).] 
+            We know that ${\truthset{p}{\model} = \truthset{\psi}{\model}}$.
+            Then, $n \in \truthset{\psi}{\model}$, and, from the def.~of $\sel$, $n \in \sel(\psi,n)$.
+            This implies $n \in \truthset{\psi}{\model{\restriction}_{\sel(p,n)}}$.
+            Finally, $n\in\truthset{p}{\model{\restriction}_{\sel(p,n)}}$ from the def.~of~$\V'$.
+
+            \item [($\psi = \lnot r$).]
+            We know that ${p \doteq \lnot r} \in \tbox$.
+            From the def.~of $\V'$, $\truthset{r}{\model{\restriction}_{\sel(p,n)}} = \emptyset$, and $\truthset{p}{\model{\restriction}_{\sel(p,n)}} = \truthset{\lnot r}{\model{\restriction}_{\sel(p,n)}}$; i.e., $\truthset{p}{\model{\restriction}_{\sel(p,n)}} = \sel(p,n)$.
+            Immediately, $n \in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$.
+        \end{description}
+        \item[Inductive cases.] \
+            \begin{description}
+                \item[($\psi = r \land r'$).]    The proof is by cases.
+                
+                {\bf Case 1:} (${r \doteq \psi} \notin \tbox$ and ${r' \doteq \psi'} \notin \tbox$). 
+                From the def.~of $\V'$, $\truthset{r}{\model{\restriction}_{\sel(p,n)}} = \truthset{r}{\model{\restriction}_{\sel(p,n)}} = \{n\}$.
+                We get $n \in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$ immediately from the def.~of~$\V'$.
+
+                {\bf Case 2:} (${r \doteq \psi} \in \tbox$ and ${r' \doteq \psi'} \notin \tbox$). 
+                From the IH, we know $n \in \truthset{r}{\model{\restriction}_{\sel(p,n)}}$.
+                Moreover, from the def.~of $\V'$, $\truthset{r'}{\model{\restriction}_{\sel(p,n)}} = \{n\}$.
+                We get $n \in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$ immediately from the def.~of $\V'$.
+
+                {\bf Case 3:} (${r \doteq \psi} \in \tbox$ and ${r' \doteq \psi'} \in \tbox$). 
+                From the IH, $n \in \truthset{r}{\model{\restriction}_{\sel(p,n)}}$ and $n \in \truthset{r'}{\model{\restriction}_{\sel(p,n)}}$.
+                We get $n \in \truthset{p}{\model{\restriction}_{\sel(p,n)}}$ immediately from the def.~of $\V'$.
+            \item[($\psi = r \lor r'$).] Similar to the case for $\land$.
+            \end{description}
+    \end{description}
+
+    For Item 3:
+    \begin{description}
+        \item[Bases cases.] \
+        \begin{description}
+            \item[($\psi\in\set{\lnot r, \tup{\alpha*_\cmp\beta},[\alpha*_\cmp\beta]}$).]
+            If $\psi = \lnot r$, then, the result is immediate. 
+            The interesting case is $\psi \doteq \tup{\alpha*_\cmp\beta}$ (the case $\psi = [\alpha *_\cmp \beta]$ is similar).
+            In this case, notice that $|\sel(p,n)| = |\sel(\psi,n)| \leq |\alpha|+|\beta| \leq |\tbox|$.
+            This observation concludes the proof of the base cases.
+        \end{description}
+        \item[Inductive cases.] \
+            \begin{description}
+                \item[($\psi = r \land r'$).] The proof is by cases (cf.~Item 2 above).
+                The interesting case is ${r \doteq \psi} \in \tbox$ and ${r' \doteq \psi'} \in \tbox$. 
+                From the IH, $|\sel(r,n)|$ and $|\sel(r',n)|$ are polynomial on $|\tbox|$.
+                It is immediate that $|\sel(r,n)|+|\sel(r',n)|$ is also polynomial on $|\tbox|$.
+                From this fact, $|\sel(p,n)|$ is polynomial on $|\tbox|$ as desired.
+            \item[($\psi = r \lor r'$).] Similar to the case for $\land$. \qed
+            \end{description}
+    \end{description}
+\end{proof}
+
+\Cref{ex:selection-tbox} shows how the selection function works.
+
+\input{example}
+
+By using~\Cref{lemma:sel:tbox} and the same argument as in~\Cref{theorem:xp-sat-np-complete}, this time w.r.t. a TBox, we obtain the intended result.
+
+\begin{theorem}\label{th:concept-wrt-tbox-xp}
+The problem of concept satisfiability w.r.t. a TBox in $\xpath$ is \np-complete.
+\end{theorem}

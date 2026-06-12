@@ -1,0 +1,117 @@
+\section{Description Logics with Concrete Domains}
+\label{sec:alcd}
+
+In this section we introduce DL with concrete domains.
+More precisely, we present the logic $\alcd$~\cite{BaaderH91}.
+This logic can be seen as the logic $\alc$ extended with:
+  \emph{abstract features},
+  \emph{concrete features}, and, more importantly, a
+  \emph{concrete domain} $\cdom$ (which can be seen as a parameter of the logic).
+We make these ideas precise below.
+
+\begin{definition}[Concrete Domain]\label{def:conc:domain}
+    A \emph{concrete domain} is a pair $\cdom = \tup{\Delta_\cdom, \Phi_\cdom}$ where:
+      $\Delta_\cdom$ is a non-empty set, and
+      $\Phi_\cdom$ is a set of $n$-ary predicate names s.t.\
+        each $P \in \Phi_\cdom$ has an extension $P^\cdom \subseteq \Delta_\cdom^n$.
+    A concrete domain is \emph{admissible} if:
+      (i) $\Phi_\cdom$ it is closed under negation, i.e.,
+        for each $P\in\Phi_\cdom$ there is $\bar{P}\in\Phi_\cdom$ such that $\bar{P}^\cdom=\Delta_\cdom\setminus P^\cdom$,
+      (ii) there exists $\toppred \in \Phi_\cdom$ s.t.\
+        $\toppred^\cdom=\Delta_\cdom$, and
+      (iii) there exists an algorithm for deciding satisfiability of finite conjunctions of the form
+        % $\bigwedge_{P_i\in\Phi_\cdom} P_i(\mathbf{x}_i)$ (with $\mathbf{x}_i$ a tuple of variables of the appropriate arity)
+        $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whosef length is the arity of $P_i$.
+\end{definition}
+
+Below we assume that $\cdom$ is an arbitrary but fixed concrete domain. Moreover, we assume that 
+$N_C=\set{C, D, C_1, C_2 , \dots}$ is a countable set of \emph{concept names},
+$N_R= \set{r, r_1, r_2 , \dots, r, \dots}$ is a countable set of \emph{role names},
+$N_{\mathit{aF}}=\set{f, f_1, f_2 , \dots} \subseteq N_R$ is a countable set of \emph{abstract features}, and
+$N_{\mathit{cF}}=\set{g, g_1, g_2 , \dots}$ is a countable set of \emph{concrete features}. 
+The elements in $N_{\mathit{aF}}^{*}$ are called \emph{abstract paths}.
+% Since our goal is to use concrete domains to reason about $\xpath$, we consider a simple concrete domain $\cdom = \set{\D, \{= , \neq, \toppred\} }$.
+% It turns out that embedding $\xpath$ into $\alcd$ over this particular concrete domain will give us interesting complexity bounds. More interestingly, we will refine these complexity bounds and will see $\xpath$ as a fragment of $\alcd$ with good computational properties. 
+
+  
+% \begin{definition} [Signature] \hfill
+%     \begin{enumerate}
+%       \item $N_C=\set{C_1, C_2 , \dots}$ is a contably infinite set, called \emph{concept names};
+%       \item $N_R= \set{r_1, r_2 , \dots}$  is a contably infinite set, called  \emph{role names};
+%       \item $N_{aF}=\set{f_1, f_2 , \dots}$ is a  infinite subset of $N_R$,  called \emph{abstract features};
+%       \item $N_{cF}=\set{g_1, g_2 , \dots}$ is a infinite set, called \emph{concrete features}.
+%       \item $O_a= \set{a_1, a_2, \dots}$ is a contably infinite set called \emph{abstract object};
+%       \item $O_c= \set{x_1, x_2, \dots}$ is a contably infinite set called \emph{abstract object};
+%     \end{enumerate}
+% \end{definition}
+
+\begin{definition}[Language] \label{def:alcd-syntax}
+  % Let $\cdom$ be a concrete domain. % as in \Cref{def:conc:domain}.
+  The well-formed expressions of $\alcd$, called \emph{concepts}, are defined by the grammar:
+  \[
+    C, D \Coloneqq
+    C_i \mid
+    \lnot C \mid
+    C \sqcap D \mid
+    %C \sqcup C \mid 
+    \exists R.C \mid
+    \exists u_1g_1 \dots u_ng_n.P,
+  \]
+  where $C_i\in N_C$, $R\in N_R$, $P \in \Phi_\cdom$ is a $n$-ary predicate name, each $u_i$ is an abstract path, and $g_i \in N_{\mathit{cF}}$.
+\end{definition}
+
+Models of this logic are called \emph{interpretations}. We will show later on the correspondence between data models and interpretations. 
+
+\begin{definition}[Interpretation]\label{def:interpretation}
+    An \emph{interpretation} is a structure defined as
+    ${\interp = 
+    \tup{\Delta_{\interp}, {\cdot^{\interp}}}} $ 
+    where:
+    \begin{enumerate}
+      \item 
+        $\Delta^{\interp}$ is a non-empty set of elements (also called domain).
+      \item 
+        $\cdot^{\interp}$ is a function that maps:
+        \begin{enumerate}
+          \item 
+            every $C_i \in N_C$ to a subset $\sem{C_i} \subseteq \Delta_{\interp}$;
+          \item  
+            every $r_i \in N_R$ to a binary relation $\sem{r_i}$ on $\Delta_{\interp}$;
+          \item 
+            every  $f_i \in N_{aF}$, to a functional binary relation $\sem{r_i}$ on $\Delta_{\interp}$;
+          \item 
+            every $g_i \in N_{cF}$, to a partial function $g^\interp : \Delta_\interp \nrightarrow \Delta_D$.
+          % \item 
+          %   every $a_i \in O_a$, $\sem{a_i} \in \Delta_{\interp}$;
+          % \item 
+          %   every $x_i \in O_c$, $\sem{x_i} \in \Delta_{D}$;  
+        \end{enumerate}
+    \end{enumerate}
+    For every abstract path $u = f_1 \dots f_k$, the interpretation $u^{\interp}$ of $u$ is defined as the (relational) composition $f_1^\interp; \dots; f_k^\interp$.
+    % Moreover, if $g$ is a concrete feature, the interpretation $(ug)^{\interp}$ of $ug$ is defined as the (relational) composition $u^\interp; g^\interp$.
+  \end{definition}
+  
+  \begin{definition} [Semantics] \label{def:alcd:semantics} 
+    Let ${\interp = \tup{\Delta_{\interp}, {\cdot^{\interp}}}}$ be an interpretation.
+    The semantics of $\alcd$ concepts is defined as: 
+    \begin{align*}
+      (\lnot C)^\interp                  ={}& \Delta^\interp \setminus C^\interp \\
+      (C \sqcap D )^\interp              ={}&  {C^\interp} \cap {D^\interp} \\
+      (\exists R.C )^\interp             ={}& \setof{x}{ \text{exists } y \text{ s.t } (x, y) \in R^\interp \text{ and } y \in C^\interp } \\
+      (\exists u_1g_1 \dots u_ng_n.P)^\interp  ={}&  \{x \mid \text{exists } {y_i \in \dom(g_i^\interp)} \text{ s.t } (x,y_i) \in u_i^\interp \\
+      & \quad\quad \text{ and } (g_1^\interp(y_1) \dots g_n^\interp(y_n)) \in P^\cdom \}.
+  \end{align*}
+  \end{definition}
+
+
+  The results listed below are relevant to provide some complexity bounds of reasoning tasks for $\xpath$ in a DL setting.  See~\cite{Lutz1998-LUTDLW-2} for further details.
+
+  \begin{proposition}[\cite{Lutz02}] \label{prop:lutz}
+    If $\cdom$-satisfiability is in \pspace, then we have the following complexity bounds for $\alcd$ reasoning problems: 
+    \begin{enumerate}
+      \item concept satisfiability is \pspace-complete;
+      \item ABox consistency is \pspace-complete;
+      \item concept satisfiability w.r.t.\ acyclic TBoxes is in \nexptime.
+    \end{enumerate}
+  \end{proposition}
+  
