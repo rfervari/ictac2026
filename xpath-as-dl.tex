@@ -44,7 +44,7 @@ To show correctness of the translation, we need to put models of $\xpath$ and in
 The following result states that data models of $\xpath$ can be seen as interpretations of $\alcd$ where $\cdom$ is an equality domain.
 
 \begin{lemma}\label{lemma:models-xp-dl}
-    $\interp_\model$ is a interpretation of $\alcd$ and $\cdom^\model$ is an admissible concrete domain.
+    $\interp_\model$ is a interpretation and $\cdom^\model$ is an admissible concrete domain.
 \end{lemma}
 
 The proof of the lemma above is straightforward, and enables us to establish the following correspondence between the two logics. 
@@ -135,5 +135,4 @@ The proof of the lemma above is straightforward, and enables us to establish the
     % \end{description}    
 \end{proof}
 
-The result in \Cref{th:translation-correctness} tells us that $\xpath$ forms a very simple fragment of $\alcd$.
-This result further makes it possible to define and study the properties of standard reasoning methods for $\xpath$ in a DL setting. In particular, we obtain complexity upper bounds for them, by~\Cref{prop:lutz}. However these bounds are not optimal. The next section is devoted to show tight complexity bounds for $\xpath$.
+\Cref{th:translation-correctness} shows that $\xpath$ carves out a simple, yet worthwhile, fragment of $\alcd$. This result is significant because it allows us to adapt standard reasoning methods from the DL setting to $\xpath$. Moreover, by applying~\Cref{prop:lutz}, it yields upper bounds on the complexity of reasoning tasks for $\xpath$. In the following section, we improve upon them by establishing tight complexity bounds for $\xpath$.

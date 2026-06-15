@@ -1,10 +1,10 @@
 \section{Description Logics with Concrete Domains}
 \label{sec:alcd}
 
-In this section we present the logic $\alcd$~\cite{BaaderH91}.
-This logic is the logic $\alc$ extended with:
+Here, we present the logic $\alcd$~\cite{BaaderH91}.
+This is the logic $\alc$ extended with:
   \emph{abstract} and \emph{concrete features}, and, more importantly, a
-  \emph{concrete domain} $\cdom$.
+  \emph{concrete domain}~$\cdom$.
 
 \begin{definition}[Concrete Domain]\label{def:conc:domain}
     A \emph{concrete domain} is a pair $\cdom = \tup{\Delta_\cdom, \Phi_\cdom}$ where:
@@ -19,7 +19,7 @@ This logic is the logic $\alc$ extended with:
             $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whosef length is the arity of $P_i$.
 \end{definition}
 
-Let $\cdom$ be an arbitrary but fixed concrete domain. We introduce the syntax and semantics of $\alcd$ relative to this fixed $\cdom$ below.
+We introduce the syntax and semantics of $\alcd$ relative to an arbitrary but fixed concrete domain $\cdom$ below.
 To this end, let
   $N_C$ be a countable set of \emph{concept names},
   $N_R$ be a countable set of \emph{role names},
@@ -59,7 +59,7 @@ The elements in $N_{\mathit{aF}}^{*}$ are called \emph{abstract paths}.
 The semantics of $\alcd$ concepts is given in terms of \emph{interpretations} and concrete domains. Later on we will relate data models, and interpretations and concrete domains as alternative presentations of the same kind of structure.
 
 \begin{definition}[Interpretation]\label{def:interpretation}
-    An \emph{interpretation} is a structure defined as
+    An \emph{interpretation} is a pair
     ${\interp = 
     \tup{\Delta_{\interp}, {\cdot^{\interp}}}} $ 
     where:
