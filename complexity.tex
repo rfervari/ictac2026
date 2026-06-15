@@ -151,7 +151,7 @@ In what follows, we adopt the DL terminology and refer to proposition symbols as
 We begin with some preliminary definitions.
 
 \begin{definition}\label{def:xp:tbox}
-    A \emph{terminological box} (\emph{TBox}) in $\xpath$ is a set $\tbox$ of expressions of the form $p \doteq \psi$, where $p$ is a concept name, and $\psi$ is a concept.
+    A \emph{terminological box} (\emph{TBox}) is a set $\tbox$ of expressions of the form $p \doteq \psi$, where $p$ is a concept name, and $\psi$ is a concept.
     We call $p \doteq \psi$ a \emph{concept definition}.
     We say that a concept name $p$ \emph{directly uses} a concept $\varphi$ if there is a concept definition $p \doteq \psi$ such that $\varphi$ appears in $\psi$.
     We say that $p$ \emph{uses} $\varphi$ iff $\varphi$ is in the transtive closure of the `directly uses' relation. 
@@ -160,13 +160,13 @@ We begin with some preliminary definitions.
         \item no concept name uses itself, and
         \item the left-side of the concept definitions are all pair-wise disjoint.
     \end{enumerate}
-    If $\tbox$ is acyclic and ${p \doteq \varphi} \in \tbox$, we say that $\varphi$ defines $p$ and call $\varphi$ the definition of $p$.
+    For every acyclic $\tbox$ and every ${p \doteq \varphi} \in \tbox$, we say that $\varphi$ defines $p$ and call $\varphi$ the definition of $p$.
 \end{definition}
 
 TBoxes describe general relations between the concepts, in this case, providing definitions that can be globally assumed. On the other hand, ABoxes describe properties about particular individuals. 
 
 \begin{definition}\label{def:xp:abox}
-    An \emph{assertion box} (\emph{ABox}) in $\xpath$ is a set $\abox$ of expressions of the form:
+    An \emph{assertion box} (\emph{ABox}) is a set $\abox$ of expressions of the form:
     \[ 
         i:\varphi, \quad (i,j):\alpha, \quad i=_\cmp j, \quad \text{ or } \  i\neq_\cmp j,
     \]
@@ -200,8 +200,8 @@ Reasoning with TBoxes and ABoxes is \emph{global}, i.e., expresions are either t
 This differs from the \emph{local} reasoning from~\Cref{def:xpath:semantics}, in which the truth or falsity of an expression depends on the particular node being considered. This jump from local reasoning to global reasoning, common in DL, in many cases, causes  a jump in the complexity of the reasoning tasks. In the rest of this section we analyze the effects of adding TBoxes and ABoxes in $\xpath$ from a computational complexity perspective.
 
 The first result in this section brings back into the picture the selection function $\sel$ in~\Cref{def:selection}.
-It is not hard to see how $\sel$ can be extended to handle nominals. We would simply need to add cases $\sel(i:\varphi, n) = \sel(\varphi,\naming(i))$ and $\sel((i,j):\alpha, n) = \sel(\alpha,\naming(i))$.
-With this new definition of the selection function, we obtain the result below by adapting the argument used in the proof of \Cref{lemma:selection}.
+It is not hard to see how $\sel$ can be extended to handle nominals. We simply need to add cases $\sel(i{:}\varphi, n) = \sel(\varphi,\naming(i))$ and $\sel((i,j){:}\alpha, n) = \sel(\alpha,\naming(i))$.
+With this new definition of the selection function, we adapt the argument in the proof of \Cref{lemma:selection} and obtain the next result.
 
 \begin{theorem}\label{th:abox-xp-np}
     The ABox consistency problem for $\xpath$ is \np-complete.
@@ -217,11 +217,11 @@ We begin by making clear the problem we will tackle.
 It is easily seen that the problem of concept name satisfiability can be extended to the problem of \emph{arbitrary concept satisfiability}.
 More precisely, an arbitrary concept $\varphi$ is \emph{satisfiable} w.r.t.\ a TBox $\tbox$ iff there is  $\model$ s.t.\ $\model\models\tbox$ and $\truthset{\varphi}{\model}\neq\emptyset$.
 This problem of arbitrary concept satisfiability can be reformulated as a problem of concept name satisfiability.
-It can be proven that $\varphi$ is satisfiable w.r.t.\ $\tbox$ iff $p$ is satisfiable w.r.t.\ $\tbox \cup \{p \doteq \varphi\}$, for $p$ a new concept name, i.e., $p$ not in $\tbox$ and $\varphi$.
+Namely, $\varphi$ is satisfiable w.r.t.\ $\tbox$ iff $p$ is satisfiable w.r.t.\ $\tbox \cup \{p \doteq \varphi\}$, for $p$ a new concept name, i.e., $p$ not in $\tbox$ and $\varphi$.
 The following observation is also important.
 Suppose that we wish to check whether a concept name $p$ is satisfiable w.r.t.\ a TBox $\tbox$.
 W.l.o.g., we can always assume there is ${p \doteq \varphi} \in \tbox$.
-It can be proven that if there is no ${p \doteq \varphi} \in \tbox$, then, $p$ is satisfiable w.r.t.\ $\tbox$ iff $p$ is satisfiable w.r.t.\ $\tbox \cup \{p \doteq q \lor \lnot q\}$, for $q$ a new concept name.
+If no such a $p \doteq \varphi$ is in $\tbox$, we can just add $\tbox \cup \{p \doteq q \lor \lnot q\}$, for $q$ a new concept name. This modification of $\tbox$ does not affect satisfiability.
 
 The problem of concept name satisfiability w.r.t.\ acyclic TBoxes assumes the TBox is \emph{acyclic}.
 This restriction to acyclic TBoxes allows us to reformulate the definition of the selection function in \Cref{def:selection}, and of \emph{selected model}, to obtain an $\np$ upper bound.
@@ -254,9 +254,9 @@ Simple TBoxes form an interesting class of acyclic TBoxes, since, as stated in \
     
     \begin{description}
         \item[Rule 1: Eliminate non-atomic negations.]
-        Convert all $p\doteq\psi\in\tbox$ into $p\doteq\nnf(\psi)$.
-        Then, add $p'\doteq\nnf(\neg\psi)$ for $p'\in\props$ new, and replace each occurrence of $\lnot{p}$ with $p'$ in $\tbox$.
-        Since $\alpha$ and $\beta$ do not contain negations, $\neg\tup{\alpha=_\cmp\beta}$ is already in NNF.
+        Replace all $p\doteq\psi\in\tbox$ for $p\doteq\nnf(\psi)$.
+        Then, add $p'\doteq\nnf(\neg\psi)$ for $p'\in\props$ new, and replace occurrences of $\lnot{p}$ with $p'$ in $\tbox$.
+        Note that $\neg\tup{\alpha=_\cmp\beta}$ already is in NNF.
  
         \item[Rule 2: Break definitions.]
         For every $\varphi$ that is not a concept name, convert all ${p\doteq\varphi\wedge\psi} \in\tbox$ into $p\doteq p'\land\psi$, and add $p'\doteq\varphi$, where $p' \in \props$ is new each time. Do the same for $p\doteq\psi\wedge\varphi$ and for disjunctions.
@@ -264,8 +264,7 @@ Simple TBoxes form an interesting class of acyclic TBoxes, since, as stated in \
         \item[Rule 3: Eliminate redundant definitions.]
         Eliminate all $p \doteq p'$, and replace each occurrence of $p'$ with $p$ in $\tbox$.
     \end{description}
-    The rules 1 to 3 above terminate in polynomial time and create a new TBox $\tbox'$ which is polynomial on the size of $\tbox$. 
-    It is immediate to see that the obtained TBox $\tbox'$ is simple.
+    The rules 1 to 3 above terminate in polynomial time and create a simple TBox $\tbox'$ which is polynomial on the size of $\tbox$.
     The proof that for every data model $\model$ of $\tbox$ there is a data model $\model'$ of $\tbox'$ that agrees with $\model$ on all the proposition symbols used in $\tbox$, and viceversa, builds on the argument found in~\cite{DLbook17,Lutz02}.
     \qed
 \end{proof}
@@ -277,9 +276,8 @@ We are now in a position to define the selection function needed to establish th
 
 \begin{definition}
     \label{def:selection:tbox}
-    Let $\tbox$ be a simple TBox.
-    For every data model $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$ and $n\in\N$,
-    define the \emph{selection function} $\sel$ exactly as in~\Cref{def:selection} except that:
+    Let $\model = \tup{ \N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps} }$ be a data model, $n\in\N$, and $\tbox$ be a simple TBox.
+    Define the \emph{selection function} $\sel$ as:
     \[
     \begin{array}{@{\ }l@{\,}l@{}@{\ }l}
         \sel(\apath,n) & = \begin{cases}
@@ -311,6 +309,7 @@ We are now in a position to define the selection function needed to establish th
     \]
     Then, define $\model{\restriction}_{\sel(\varphi,n)}\,{=}\,\tup{ \N', \D, \set{\R'_{\apath}}_{\apath \in \mods}, \valuation',\set{\data'_\cmp}_{\cmp \in \cmps} }$ as:
     \begin{enumerate}
+        \setlength{\itemsep}{0pt}
         \item 
             $\N' = \N \cap \sel(\varphi,n)$;
         % \item 
@@ -344,7 +343,7 @@ We are now in a position to define the selection function needed to establish th
     We call $\model{\restriction}_{\sel(\varphi,n)}$ the \emph{selected} data model.
 \end{definition}
 
-The first distinction between the definition above and the one in~\Cref{def:selection} is the case of propositional symbols. Here, if a propositional symbol $p$ is such that $p\doteq\psi \in \tbox$, we need to proceed in unfolding such a definition recursively. Even though a TBox provides global information about the model, we only unfold the definitions that are relevant from the evaluation point, thus, we only take into  account definitions in the TBox locally. The second distinction is a minor one, and concerns the definition of a case of disjunction. We need this case now, as in simple TBoxes we deal with formulas in negation normal form. 
+The first distinction between the definition of the selection function in \Cref{def:selection:tbox} and that in~\Cref{def:selection} is the case of propositional symbols. In \Cref{def:selection:tbox}, if a propositional symbol $p$ is such that $p\doteq\psi \in \tbox$, we need to proceed in unfolding such a definition recursively. Even though a TBox provides global information about the model, we only unfold the definitions that are relevant from the evaluation point, thus, we only take into  account definitions in the TBox locally. The second distinction is a minor one, and concerns the definition of a case of disjunction. We need this case now, as in simple TBoxes we deal with formulas in negation normal form. 
 
 It is important to notice how, contrary to the simplicity in the definition of the selected model in \Cref{def:selection}, the definition of the valuation function for the selected model for the case of TBoxes requires some ingenuity and takes advantage of the structure of the TBox.
 In particular, the structure of the TBox guarantees that the recursive definition of $\V'$ is well-founded.
