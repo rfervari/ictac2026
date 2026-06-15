@@ -5,8 +5,7 @@ In this section we show how to characterize $\xpath$ as a fragment of $\alcd$.
 The connection between the Boolean components is straightforward. Path expressions of $\xpath$ can be naturally translated as abstract paths.
 The interesting element in the translation is the use of concrete features to encode data values and the inclusion of an equality predicate in the concrete domain as a way to encode data comparisons. It turns out that to map $\xpath$ as a fragment of $\alcd$ we need very simple (admissible) concrete domains of the form $\cdom = \tup{\D, \{= , \neq, \botpred, \toppred\}}$; where $\D$ captures the universe of data values, and $=$ and $\neq$ capture equality and inequality on $\D$.
 We refer to these simple concrete domains as \emph{equality domains}.
-
-The translation from $\xpath$ expressions to $\alcd$ concepts is given below.
+The translation from $\xpath$ expressions to $\alcd$ concepts is given next.
 
 \begin{definition} \label{def:translation} 
     The \emph{translation function} $\st$ from node expressions of $\xpath$ into concepts of $\alcd$ is defined recursively as:

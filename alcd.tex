@@ -5,13 +5,26 @@ In this section we present the logic $\alcd$~\cite{BaaderH91}.
 This logic is the logic $\alc$ extended with:
   \emph{abstract} and \emph{concrete features}, and, more importantly, a
   \emph{concrete domain} $\cdom$.
-We introduce the syntax and semantics of this logic below.
 
-Let
-  $N_C=\set{C, D, C_1, C_2 , \dots}$ be a countable set of \emph{concept names},
-  $N_R= \set{r, r_1, r_2 , \dots, r, \dots}$ be a countable set of \emph{role names},
-  $N_{\mathit{aF}}=\set{f, f_1, f_2 , \dots} \subseteq N_R$ be a countable set of \emph{abstract features}, and
-  $N_{\mathit{cF}}=\set{g, g_1, g_2 , \dots}$ be a countable set of \emph{concrete features}. 
+\begin{definition}[Concrete Domain]\label{def:conc:domain}
+    A \emph{concrete domain} is a pair $\cdom = \tup{\Delta_\cdom, \Phi_\cdom}$ where:
+        $\Delta_\cdom$ is a non-empty set, and
+        $\Phi_\cdom$ is a set of $n$-ary predicate names s.t.\
+        each $P \in \Phi_\cdom$ has an extension $P_\cdom \subseteq \Delta_\cdom^n$.
+    A concrete domain is \emph{admissible} if:
+        (i) $\Phi_\cdom$ it is closed under negation:
+            for each $P\in\Phi_\cdom$ there is $\bar{P}\in\Phi_\cdom$ such that $\bar{P}^\cdom=\Delta_\cdom\setminus P_\cdom$,
+        (ii) exists $\toppred \in \Phi_\cdom$ s.t.\ $\toppred_\cdom=\Delta_\cdom$, and
+        (iii) exists an algorithm for deciding satisfiability of finite conjunctions of the form
+            $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whosef length is the arity of $P_i$.
+\end{definition}
+
+Let $\cdom$ be an arbitrary but fixed concrete domain. We introduce the syntax and semantics of $\alcd$ relative to this fixed $\cdom$ below.
+To this end, let
+  $N_C$ be a countable set of \emph{concept names},
+  $N_R$ be a countable set of \emph{role names},
+  $N_{\mathit{aF}} \subseteq N_R$ be a countable set of \emph{abstract features}, and
+  $N_{\mathit{cF}}$ be a countable set of \emph{concrete features}. 
 The elements in $N_{\mathit{aF}}^{*}$ are called \emph{abstract paths}.
 % Since our goal is to use concrete domains to reason about $\xpath$, we consider a simple concrete domain $\cdom = \set{\D, \{= , \neq, \toppred\} }$.
 % It turns out that embedding $\xpath$ into $\alcd$ over this particular concrete domain will give us interesting complexity bounds. More interestingly, we will refine these complexity bounds and will see $\xpath$ as a fragment of $\alcd$ with good computational properties. 
@@ -30,7 +43,7 @@ The elements in $N_{\mathit{aF}}^{*}$ are called \emph{abstract paths}.
 
 \begin{definition}[Language] \label{def:alcd-syntax}
   % Let $\cdom$ be a concrete domain. % as in \Cref{def:conc:domain}.
-    The well-formed expressions of $\alcd$, called \emph{concepts}, are defined by the grammar:
+    The $\alcd$ \emph{concepts} are defined by the grammar:
     \[
         C, D \Coloneqq
         C_i \mid
@@ -43,25 +56,7 @@ The elements in $N_{\mathit{aF}}^{*}$ are called \emph{abstract paths}.
     where $C_i\in N_C$, $R\in N_R$, $P \in \Phi_\cdom$ is a $n$-ary predicate name, each $u_i$ is an abstract path, and $g_i \in N_{\mathit{cF}}$.
 \end{definition}
 
-The semantics of $\alcd$ is given in terms of \emph{interpretations}. Later on we will relate data models and interpretations as alternative presentations of the same kind of structure.
-
-\begin{definition}[Concrete Domain]\label{def:conc:domain}
-    \val{donde usamos esta definicion?}
-    A \emph{concrete domain} is a pair $\cdom = \tup{\Delta_\cdom, \Phi_\cdom}$ where:
-      $\Delta_\cdom$ is a non-empty set, and
-      $\Phi_\cdom$ is a set of $n$-ary predicate names s.t.\
-        each $P \in \Phi_\cdom$ has an extension $P^\cdom \subseteq \Delta_\cdom^n$.
-    A concrete domain is \emph{admissible} if:
-      (i) $\Phi_\cdom$ it is closed under negation, i.e.,
-        for each $P\in\Phi_\cdom$ there is $\bar{P}\in\Phi_\cdom$ such that $\bar{P}^\cdom=\Delta_\cdom\setminus P^\cdom$,
-      (ii) there exists $\toppred \in \Phi_\cdom$ s.t.\
-        $\toppred^\cdom=\Delta_\cdom$, and
-      (iii) there exists an algorithm for deciding satisfiability of finite conjunctions of the form
-        % $\bigwedge_{P_i\in\Phi_\cdom} P_i(\mathbf{x}_i)$ (with $\mathbf{x}_i$ a tuple of variables of the appropriate arity)
-        $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whosef length is the arity of $P_i$.
-\end{definition}
-
-In what follows, we assume that $\cdom$ is an arbitrary but fixed concrete domain.
+The semantics of $\alcd$ concepts is given in terms of \emph{interpretations} and concrete domains. Later on we will relate data models, and interpretations and concrete domains as alternative presentations of the same kind of structure.
 
 \begin{definition}[Interpretation]\label{def:interpretation}
     An \emph{interpretation} is a structure defined as
@@ -93,14 +88,14 @@ In what follows, we assume that $\cdom$ is an arbitrary but fixed concrete domai
   \end{definition}
   
   \begin{definition} [Semantics] \label{def:alcd:semantics} 
-    Let ${\interp = \tup{\Delta_{\interp}, {\cdot^{\interp}}}}$ be an interpretation.
-    The semantics of $\alcd$ concepts is defined as: 
+    Let ${\interp = \tup{\Delta_{\interp}, {\cdot^{\interp}}}}$ be an interpretation, and $\cdom = \tup{\Delta_\cdom, \Phi_\cdom}$ be a concrete domain.
+    The semantics of $\alcd$ concepts is: 
     \begin{align*}
       (\lnot C)^\interp                  ={}& \Delta^\interp \setminus C^\interp \\
       (C \sqcap D )^\interp              ={}&  {C^\interp} \cap {D^\interp} \\
       (\exists R.C )^\interp             ={}& \setof{x}{ \text{exists } y \text{ such that } (x, y) \in R^\interp \text{ and } y \in C^\interp } \\
       (\exists u_1g_1 \dots u_ng_n.P)^\interp  ={}&  \{x \mid \text{exists } {y_i \in \dom(g_i^\interp)} \text{ such that } \\
-      & \qquad (x,y_i) \in u_i^\interp \text{ and } (g_1^\interp(y_1) \dots g_n^\interp(y_n)) \in P^\cdom \}.
+      & \qquad (x,y_i) \in u_i^\interp \text{ and } (g_1^\interp(y_1) \dots g_n^\interp(y_n)) \in P_\cdom \}.
   \end{align*}
   \end{definition}
 
