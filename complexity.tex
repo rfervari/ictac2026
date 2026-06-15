@@ -2,7 +2,7 @@
 \label{sec:complexity-xpath-f}
 
 In this section we explore the computational complexity of some typical DL-reasoning tasks for the case of $\xpath$.
-We pay attention to the complexity of \emph{concept satisfiability},  ABox \emph{consistency} and \emph{concept satisfiability w.r.t. acyclic TBoxes} for $\xpath$ expressions. In particular, we will show that $\xpath$ can be actually seen as a fragment of $alcd$ enjoying nice computational properties.
+We pay attention to the complexity of \emph{concept satisfiability},  ABox \emph{consistency} and \emph{concept satisfiability w.r.t. acyclic TBoxes} for $\xpath$ expressions. Our results show that $\xpath$ can be actually seen as a fragment of $\alcd$ enjoying nice computational properties.
 %It is worth pointing out that, since~\Cref{th:translation-correctness} permits us to see $\xpath$ as a fragment of $\alcd$, the results in~\Cref{prop:lutz} easily provide upper bounds for the reasoning tasks just mentioned.
 %As it turns out, these upper bounds are not optimal.
 %We show that the $\xpath$ fragment of $\alcd$ has lower complexity bounds.
@@ -57,17 +57,17 @@ The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal})
     We refer to $\model{\restriction}_{\sel(\varphi,n)}$ as the \emph{selected} data model.
 \end{definition}
 
-In a nutshell, given a model, $\sel$ selects the relevant pieces on which to evaluate a given node expression. The next lemma states that this selection preserves the truth value of a node expression.
+In a nutshell, given a model, the function $\sel$ selects the relevant part of the data models on which to evaluate a given node expression. The next lemma states that this selection preserves the truth value of a node expression.
 
 \begin{lemma}\label{lemma:selection}
-    Let $\varphi$ be a node expression.
-    Moreover, let ${\model = \tup{\N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps}}}$ be s.t.\ ${\truthset{\varphi}{\model}\neq\emptyset}$.
-    Then, for all $\{n,m\}\subseteq\N$, all path expressions $\alpha$, and all node expressions~$\varphi$, the following statements are true:
+    Let $\varphi$ be a node expression, and $\alpha$ be a path expression.
+    Moreover, let ${\model = \tup{\N, \D, \set{\R_{\apath}}_{\apath \in \mods}, \valuation,\set{\data_\cmp}_{\cmp \in \cmps}}}$ be a data model such that ${\truthset{\varphi}{\model}\neq\emptyset}$ and ${\truthset{\alpha}{\model}\neq\emptyset}$.
+    Then, for all $\{n,m\}\subseteq\N$, the following statements are true:
     \begin{enumerate}[1.]
-        \item $(n,m)\in\truthset{\alpha}{\model}$ iff $(n,m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$;
-        \item $n\in\truthset{\varphi}{\model}$ iff $n\in\truthset{\psi}{\model{\restriction}_{\sel(\varphi,n)}}$. %\model{\restriction}_{\sel(\varphi,n)}
+        \setlength{\itemsep}{0pt}
+        \item $(n,m)\in\truthset{\alpha}{\model}$ iff $(n,m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$, and $\size{\sel(\alpha,n)} \leq \size{\alpha} + 1$;
+        \item $n\in\truthset{\varphi}{\model}$ iff $n\in\truthset{\psi}{\model{\restriction}_{\sel(\varphi,n)}}$, and $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$.
     \end{enumerate} 
-    Moreover, $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$.
 \end{lemma}
 
 \begin{proof}
@@ -76,42 +76,40 @@ In a nutshell, given a model, $\sel$ selects the relevant pieces on which to eva
     \item[Base cases.] \
         \begin{description}
             \item[($\alpha = \apath$).]
-            Left-to-right: let $(n,m)\in\truthset{\apath}{\model}$, i.e., $(n,m)\in\R_\apath$.
+            Let $(n,m)\in\truthset{\apath}{\model}$.
             We know $\sel(\apath,n)=\set{n,\R_\apath(m)} = \set{n,m}$.
-            Then, $(n,m)\in (\R_\apath \cap ((\sel(\apath,n))^2))$.
-            So, $(n,m)\in\truthset{\apath}{\model{\restriction}_{\sel(\apath,n)}}$. The right-to-left direction is similar.
+            This is equivalent to $(n,m)\in (\R_\apath \cap ((\sel(\apath,n))^2))$.
+            So, $(n,m)\in\truthset{\apath}{\model{\restriction}_{\sel(\apath,n)}}$.
             
             \item[($\varphi = p$).]
-            Left-to-right: let $n\in\truthset{p}{\model}$, i.e., $n\in\V(p)$.
-            Then, $n\in(\V(p) \cap \sel(p,n))$.
+            Let $n\in\truthset{p}{\model}$.
+            This is equivalent to $n\in(\V(p) \cap \sel(p,n))$.
             So, $n\in\truthset{p}{\model{\restriction}_{\sel(p,n)}}$.
-            The right-to-left direction is similar.
         \end{description}
     \item[Inductive cases.] \
         \begin{description}
 
             \item[($\alpha = \apath\alpha$).]
             Let $(n,m)\in\truthset{\apath\alpha}{\model}$.
-            We know $(n,\R_\apath(n))\in\R_\apath$ and $(\R_\apath(n),m)\in\truthset{\alpha}{\model}$.
+            Then, exists $\R_\apath(n)$ such that $(n,\R_\apath(n))\in\R_\apath$ and ${(\R_\apath(n),m)\in\truthset{\alpha}{\model}}$.
             The former implies $(n,\R_\apath(n))\in(\R_\apath \cap \sel(\apath,n)^2)$. By the IH, the latter implies $(\R_\apath(n),m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$.
             From the def.~of $\sel$, we know $\sel(\apath\alpha,n)=\set{n}\cup\sel(\alpha,\R_\apath(n))$.
             Then, $(n,m)\in(\R_\apath \cap \sel(\apath\alpha,n)^2)$.
             Therefore, $(n,m)\in\truthset{\apath\alpha}{\model{\restriction}_{\sel(\apath\alpha,n)}}$.
-            The other direction is similar.
 
             \item[($\varphi = \neg\psi$ and $\varphi = \psi\wedge\chi$).]
             Immediate from the IH.
             
-            \item[($\varphi = \tup{\alpha=_\cmp\beta}$).]
-            Let $n\in\truthset{\tup{\alpha=_{\cmp}\beta}}{\model}$.
-            We know there are $m$, $m'$ s.t.:
-                $(n,m)\in\truthset{\alpha}{\model}$,
+            \item[($\varphi = \tup{\alpha{=_\cmp}\beta}$).]
+            Let $n\,{\in}\,\truthset{\tup{\alpha{=_{\cmp}}\beta}}{\model}$.
+            Exist $m,m'$ such that:
+                ${(n,m)\in\truthset{\alpha}{\model}}$,
                 ${(n,m')\in\truthset{\beta}{\model}}$, and
                 ${\data_\cmp(m)=\data_\cmp(m')}$.
             By IH,
                 $(n,m)\in\truthset{\alpha}{\model{\restriction}_{\sel(\alpha,n)}}$, and
                 $(n,m')\in\truthset{\beta}{\model{\restriction}_{\sel(\beta,n)}}$.
-            From the def.~of $\sel$, it follows that $\{n,m,m'\}\subseteq\sel(\tup{\alpha=_{\cmp}\beta},n)$.
+            By definition, $\{n,m,m'\}\subseteq\sel(\tup{\alpha=_{\cmp}\beta},n)$.
             Then, $n\in\truthset{\tup{\alpha=_\cmp\beta}}{\model{\restriction}_{\sel(\tup{\alpha=_\cmp\beta},n)}}$.
             The other direction is similar.
                         
@@ -120,7 +118,7 @@ In a nutshell, given a model, $\sel$ selects the relevant pieces on which to eva
         \end{description}     
     \end{description}
 
-    It remains to show that  $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$, where $\size{\varphi}$ is the number of modal symbols of $\varphi$. The proof is by induction on $\varphi$.
+    It remains to show that $\size{\sel(\alpha,n)} \leq \size{\alpha} + 1$ and $\size{\sel(\varphi,n)} \leq \size{\varphi} + 1$. The proof is by induction on $\varphi$.
     Notice that~$\sel$ adds new nodes only while ``breaking down'' path expressions.
     More precisely, $\sel$ adds only one node per each modal symbol in the recursive case.
     The interesting case is $\varphi = \tup{\alpha*_{\cmp}\beta}$.
