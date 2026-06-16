@@ -11,9 +11,9 @@ We pay attention to the complexity of \emph{concept satisfiability},  ABox \emph
 \label{subsec:xpath-f-sat}
 
 %Our perspective in this paper is to seeing $\xpath$ as a description logic. In particular, we present it as a fragment of $\alcd$ enjoying some nice computational properties. 
-We start by proving that the satisfiability problem for node expressions in $\xpath$ (referred to as \emph{concept satisfiability} in the DL terminology) is $\np$-complete.
+We start by proving that the satisfiability problem for node expressions in $\xpath$ (referred to as \emph{concept satisfiability} in the DL terminology) is $\np$-complete. This problem consists in, given a node expression $\varphi$, decide whether there is a model $\model$ such that $\truthset{\varphi}{\model}\neq\emptyset$. 
 The argument of the proof is akin to that for the modal logic $\knaltone$. %(i.e., the multi-modal logic over $n$ functional relations).
-The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal}). In what follows, we will use $*$ to refer indistinctly to $=$ or $\neq$ in data comparisons.
+The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal}), whose novelty here is the ability of handling data comparisons. In what follows, we will use~$*$ to refer indistinctly to $=$ or $\neq$ in data comparisons.
 
 \begin{definition}
     \label{def:selection}
@@ -22,29 +22,29 @@ The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal})
     \begin{array}{@{\ }l@{\ }l}
         \sel(\apath,n) & = \begin{cases}
             \begin{array}{l@{\quad\quad\quad\quad}l}
-                \{n\}  & \text{if $\R_{\apath}(n)$ is undefined}\\
-                \{n,\R_\apath(n)\} & \text{if $\R_{\apath}(n)$ is defined} 
+                \{n\}  & \text{\ if $\R_{\apath}(n)$ is undefined}\\
+                \{n,\R_\apath(n)\} & \text{\ if $\R_{\apath}(n)$ is defined} 
             \end{array}
             \end{cases} 
             \\[10pt] 
         \sel(\apath\alpha,n) & = \begin{cases}
             \begin{array}{ll}
-                \{n\} & \text{if $\R_{\apath}(n)$ is undefined} \\
-                \{n\} \cup \sel(\alpha,\R_\apath(n)) & \text{if $\R_{\apath}(n)$ is defined}
+                \{n\} & \text{\ if $\R_{\apath}(n)$ is undefined} \\
+                \{n\} \cup \sel(\alpha,\R_\apath(n)) & \text{\ if $\R_{\apath}(n)$ is defined}
             \end{array}
             \end{cases}
             \\[10pt] 
         \sel(p,n) & = \{n\} \\
         \sel(\neg\varphi,n) & = \sel(\varphi,n) \\
         \sel(\varphi\land\psi,n) & = \sel(\varphi,n) \cup \sel(\psi,n) \\
-        \sel(\tup{\alpha *_{\cmp}\beta},n) & = \sel(\alpha,n) \cup \sel(\beta,n) 
+        \sel(\tup{\alpha *_{\cmp}\beta},n) & = \sel(\alpha,n) \cup \sel(\beta,n).
     \end{array}
     \]
     \noindent
     Then, define $\model{\restriction}_{\sel(\varphi,n)}\,{=}\,\tup{ \N', \D, \set{\R'_{\apath}}_{\apath \in \mods}, \valuation',\set{\data'_\cmp}_{\cmp \in \cmps} }$ as:
     \begin{enumerate}
         \item 
-            $\N' = \N \cap \sel(\varphi,n)$;
+            $\N' = \N \cap \sel(\varphi,n)$
         % \item 
         %     $\D = \{0\} \cup \bigcup\setof{\N/{\equiv_\cmp}}{\text{`${*_\cmp}$' appears in $\tbox$}}$;
         \item 
@@ -200,8 +200,7 @@ Reasoning with TBoxes and ABoxes is \emph{global}, i.e., expresions are either t
 This differs from the \emph{local} reasoning from~\Cref{def:xpath:semantics}, in which the truth or falsity of an expression depends on the particular node being considered. This jump from local reasoning to global reasoning, common in DL, in many cases, causes  a jump in the complexity of the reasoning tasks. In the rest of this section we analyze the effects of adding TBoxes and ABoxes in $\xpath$ from a computational complexity perspective.
 
 The first result in this section brings back into the picture the selection function $\sel$ in~\Cref{def:selection}.
-It is not hard to see how $\sel$ can be extended to handle nominals. We simply need to add cases $\sel(i{:}\varphi, n) = \sel(\varphi,\naming(i))$ and $\sel((i,j){:}\alpha, n) = \sel(\alpha,\naming(i))$.
-With this new definition of the selection function, we adapt the argument in the proof of \Cref{lemma:selection} and obtain the next result.
+It is not hard to see how $\sel$ can be extended to handle nominals. We simply need to add cases $\sel(i{:}\varphi, n) = \sel(\varphi,\naming(i))$ and $\sel((i,j){:}\alpha, n) = \sel(\alpha,\naming(i))$. With this new definition at hand, we can tackle the problem of deciding whether an ABox is consistent. Then, the next result follows by adapting the argument in the proof of \Cref{lemma:selection}.
 
 \begin{theorem}\label{th:abox-xp-np}
     The ABox consistency problem for $\xpath$ is \np-complete.
@@ -233,7 +232,7 @@ We make these ideas precise below.
 \begin{definition}\label{def:simple-tbox}
     We call a TBox $\tbox$ \emph{simple} iff it is acyclic and:
     \begin{enumerate}
-        \item for all $p \doteq \psi\in\tbox$, $\psi \in \{\neg q, q\land r, q\lor r, \tup{\alpha*_\cmp \beta}, \lnot\tup{\alpha*_{\cmp}\beta}\}$;
+        \item for all $p \doteq \psi\in\tbox$, $\psi \in \{\neg q, q\land r, q\lor r, \tup{\alpha*_\cmp \beta}, \lnot\tup{\alpha*_{\cmp}\beta}\}$,
         \item for all $\{p\doteq\lnot{q}, p'\doteq\psi\}\subseteq\tbox$, we have $p'\neq q$,
     \end{enumerate} 
     where $p,q,r,p'\in\props$.
@@ -282,8 +281,8 @@ We are now in a position to define the selection function needed to establish th
     \begin{array}{@{\ }l@{\,}l@{}@{\ }l}
         \sel(\apath,n) & = \begin{cases}
             \begin{array}{l@{\quad\quad\quad~~}l}
-                \{n\}  & \text{if $\R_{\apath}(n)$ is undefined}\\
-                \{n,\R_\apath(n)\} & \text{if $\R_{\apath}(n)$ is defined} \\
+                \{n\}  & \text{\ if $\R_{\apath}(n)$ is undefined}\\
+                \{n,\R_\apath(n)\} & \text{\ if $\R_{\apath}(n)$ is defined} \\
             \end{array}
             \end{cases} 
             \\[10pt] 
@@ -369,8 +368,7 @@ The definition of the valuation for $p$ in each of these cases plays a crucial r
 
     The following terminology is useful for proving Items 2 and 3.
     We call $\psi$ a \emph{basic} definition of $q$ iff $\psi \in \{\lnot r, \tup{\alpha *_\cmp \beta}, [\alpha *_\cmp \beta]\}$; otherwise we call $\psi$ a \emph{compound} definition of $q$.
-    The proof of Items 2 and 3 are by induction on the structure of the definition $\psi$ of $p$.
-
+    The proof of Items 2 and 3 are by induction on the structure of the definition $\psi$ of $p$. 
     For Item 2:
     \begin{description}
         \item[Bases cases.] \

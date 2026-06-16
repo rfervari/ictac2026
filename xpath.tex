@@ -22,7 +22,7 @@ In what follows, we assume that $\props = \set{p_1, \dots, p_n, p, q, r, \dots}$
             \tup{\alpha =_\cmp   \beta} \mid
             \tup{\alpha \neq_\cmp   \beta},
       \end{align*}
-     In this grammar, $p \in \props$, $\apath \in \mods$, $\cmp \in \cmps$. Other Boolean connectives are defined as usual. We define $[\alpha=_\cmp\beta]$ as $\neg\tup{\alpha\neq_\cmp\beta}$, and $[\alpha\neq_\cmp\beta]$ as $\neg\tup{\alpha=_\cmp\beta}$. 
+     where $p \in \props$, $\apath \in \mods$, $\cmp \in \cmps$. Other Boolean connectives are defined as usual. We define $[\alpha=_\cmp\beta]$ as $\neg\tup{\alpha\neq_\cmp\beta}$, and $[\alpha\neq_\cmp\beta]$ as $\neg\tup{\alpha=_\cmp\beta}$. 
 \end{definition}
 
 % Notice that path expressions are simply elements from $\mods^+$. This inductive definition in terms of composition will be handy in some proofs.
@@ -46,7 +46,7 @@ The semantics of $\xpath$ is given in terms of \emph{data models}.
     We use $\R_\apath(n) = m$ to indicate $(n,m)\in\R_\apath$, and say that $\R_\apath(n)$ is \emph{defined}. If such an $m$ does not exist, we say  $\R_\apath(n)$ is \emph{undefined}.
 \end{definition}
 
-Data models are a particular case of the data graphs from, e.g.,~\cite{ICDT14Jair}, in which the accessibility relations are partial functions. To properly establish the connection between XPath and DLs with concrete domains, we assume that $\D$ is a not empty common to all data models.
+Data models are a particular case of the data graphs from, e.g.,~\cite{ICDT14Jair}, in which the accessibility relations are partial functions. To properly establish the connection between XPath and DLs with concrete domains, we assume that $\D$ is a non-empty set, common to all data models.
 
 %As discussed, this fragment is enough to describe some interesting situations. Moreover, we will show that it can be used as a description language enjoying nice computational properties.
 
@@ -57,17 +57,15 @@ Data models are a particular case of the data graphs from, e.g.,~\cite{ICDT14Jai
         \truthset{ \apath }{\model}  
             & = & \R_\apath \\
         \truthset{ \alpha\beta }{\model}  
-            & = & \{(m,n)\mid \text{exist } l \text{ s.t. } (m,l)\in\truthset{\alpha}{\model} \text{ and } (l,n)\in \truthset{\beta}{\model}\} \\
+            & = & \{(m,n)\mid \text{there exists } l \text{ s.t. } (m,l)\in\truthset{\alpha}{\model} \text{ and } (l,n)\in \truthset{\beta}{\model}\} \\
         \truthset{ p }{\model}  & = & \valuation(p)  \\
         \truthset{ \lnot \varphi }{\model}  
             & = & \N \setminus \truthset{ \varphi }{\model} \\
         \truthset{ \varphi \land \psi }{\model}  
             & = & \truthset{ \varphi  }{\model}  \cap \truthset{  \psi }{\model}
             \\    
-        \truthset{ \tup{ \alpha =_\cmp \beta } }{\model}   & = & \{ m \mid  \text{exist } n,l \text{ s.t } \\
-            & & \qquad (m,n) \in  \truthset{ \alpha }{\model} \text{, } (m,l) \in  \truthset{ \beta }{\model}  \text{, }  \data_\cmp(n)=\data_\cmp(l) \} \\
-        \truthset{ \tup{ \alpha \neq_\cmp \beta } }{\model}   & = & \{ m \mid  \text{exist } n,l \text{ s.t } \\
-            & & \qquad (m,n) \in  \truthset{ \alpha }{\model} \text{, } (m,l) \in  \truthset{ \beta }{\model}  \text{, } \data_\cmp(n)\neq\data_\cmp(l) \}.
+        \truthset{ \tup{ \alpha =_\cmp \beta } }{\model}   & = & \{ m \mid  \text{exist } n,l \text{ s.t } (m,n) \in  \truthset{ \alpha }{\model} \text{, } (m,l) \in  \truthset{ \beta }{\model}  \text{, }  \data_\cmp(n)=\data_\cmp(l) \} \\
+        \truthset{ \tup{ \alpha \neq_\cmp \beta } }{\model}   & = & \{ m \mid  \text{exist } n,l \text{ s.t } (m,n) \in  \truthset{ \alpha }{\model} \text{, } (m,l) \in  \truthset{ \beta }{\model}  \text{, } \data_\cmp(n)\neq\data_\cmp(l) \}.
     \end{array}\]
     Thus, the interpretation $\truthset{\alpha}{\model}$ of a path expression is a partial function on $\N$, and the interpretation $\truthset{\varphi}{\model}$ of a node expression is a subset of $\N$. 
     A node expression $\varphi$ is \emph{satisfiable} iff there is a data model $\model$ such that $\truthset{\varphi}{\model} \neq \emptyset$. Finally, we write $\model,n\vDash\varphi$ (resp. $\model,n,m\vDash\alpha$) iff $n\in\truthset{\varphi}{\model}$ (resp. $(n,m)\in\truthset{\alpha}{\model}$).
