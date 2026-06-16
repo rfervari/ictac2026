@@ -2,31 +2,12 @@
 \label{sec:final}
 
 We investigated the fragment $\xpath$ of the query language XPath from a DL perspective. 
-This fragment features data comparisons and is interpreted over data graphs with functional accessibility relations. We showed with an example that $\xpath$ is expressive enough to model interesting scenarios. With this as a starting point, we presented a novel connection between $\xpath$ and a fragment of $\alcd$. This enabled us to see $\xpath$ as a DL with a very simple concrete domain and to obtain upper bounds on the complexity for some reasoning tasks via transfer results. 
+This fragment features data comparisons and is interpreted over data graphs with functional accessibility relations. We showed with an example that $\xpath$ is expressive enough to model non-trivial scenarios.
 
-In turn, we showed that these bounds are not tight by establishing that for $\xpath$ concept satisfiability, ABox consistency and concept satisfiability w.r.t. a TBox are all \np-complete problems.  As a contrast, for instance in~\cite{Lutz01,Lutz02b,Lutz02}, $\nexp$-hardness is established for concept satisfiability for more expressive DL with arithmetical domains.
-%
-% the following complexity result is stated for \emph{arithmetic} domains $\mathcal{D}=\tup{\Delta_\mathcal{D},\Phi_\mathcal{D}}$ --i.e., concrete domains where $\Delta_\mathcal{D}$ contains the natural numbers and $\Phi_\mathcal{D}$ contains unary predicates for equality with zero and with one, a binary equality predicate, and ternary predicates expressing addition and multiplication-- using an NExpTime-complete variant of the Post Correspondence Problem.
-%
-% \begin{proposition}[\cite{Lutz01,Lutz02b,Lutz02}]
-% For any arithmetic concrete domain $\mathcal{D}$, $\mathcal{ALC}(\mathcal{D})$-concept
-% 			satisfiability w.r.t.\ acyclic TBoxes is NExpTime-hard.
-% \end{proposition}
-%
-This is in great contrast with the complexity results we established, showing the relevance of the restrictions imposed on the expressive power of $\xpath$.
-In particular, forcing accessibility relations to be partial functions is an important component of our selection function that establishes a small model property for the reasoning tasks we investigated.   
-% Liberating this 
-% restriction will move us close to the logic $\alcpd$~\cite{Lutz02}, 
-% that allows for the use of roles where $\alcd$ permits only abstract features.
-% It is clear that we could then modify the translation function in~\Cref{def:translation} to map modal labels $\apath_i$ to role names $r_i$ in this case. Hence XPath with arbitrary accessibility relations results as a  fragment of $\alcpd$.  But allowing this additional expressive power might have an important impact on complexity, as the following result suggests:
-%
-% \begin{proposition}[\cite{Lutz02}]	
-% For any arithmetic concrete domain $\mathcal{D}$, satisfiability of $\alcpd$-
-% concepts is NExpTime-hard.
-% \end{proposition}
-%
-% Notice that the result above concerns \emph{concept satisfiability}, which is usually simpler than dealing with TBoxes. 
-Still, perhaps the additional constraints on node and path expressions (absence of tests, simpler comparisons in the concrete domain) might lead to interesting results in DL fragments  that concern XPath over arbitrary accessibility relations.
+With this as a starting point, we presented a novel connection between $\xpath$ and a fragment of $\alcd$. This connection enabled us to view $\xpath$ as a DL with a very simple concrete domain and to obtain upper bounds on the complexity of several reasoning tasks via transfer results. We then improved on these bounds and showed that concept satisfiability, ABox consistency, and concept satisfiability w.r.t.\ a TBox are all \np-complete for $\xpath$. This is in stark contrast to more expressive DLs, such as those involving arithmetical domains, for which concept satisfiability is $\nexp$-hard~\cite{Lutz01,Lutz02b,Lutz02}.
+
+Our results highlight the relevance of the restrictions we imposed on the expressive power of $\xpath$. In particular, the requirement that accessibility relations be partial functions plays a crucial role in our selection function, which establishes a small model property for the reasoning tasks under investigation.
+Beyond the functional restriction, simple tests, and other comparisons in the concrete domain, may likewise lead to interesting complexity bounds for fragments of XPath over arbitrary accessibility relations
 
 As we discussed in the introduction, only the purely navigational fragment of XPath has been studied in a DL setting before~\cite{KostylevRV14,Kost:xpat15}. In this article, we show how
 to deal with data comparisons by linking XPath with DL with concrete domains.  The work we presented here is a first step in this direction. In particular, it would be interesting to see whether our methods and results can be adapted and/or extended to deal with other logics, such as those capturing fragments of the Shapes Constraint Language (SHACL) (see, e.g.,~\cite{Ortiz23,Ahmetaj0S23} for details), or more interestingly, to establish complexity forfragment of Graph Query Language (GQL) (see, e.g.,~\cite{FrancisGGLMMMPR23,FrancisGGLMMMPR23b,FigueiraLP26}).  We should also investigate the effect 

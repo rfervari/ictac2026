@@ -29,16 +29,12 @@ To show correctness of the translation, we need to put models of $\xpath$ and in
         the extension of $\botpred$ is $\emptyset$, and
         the extension of $\toppred$ is $\D$.
     Then, define $\interp_\model = \tup{ \N, {\cdot^{\interp_\model}}}$ where: 
-    \begin{enumerate}
-        \item 
-            ${C}_{i}^{\interp_\model} = \truthset{p_i}{\model}$
-        \item 
-            ${r_i}^{\interp_\model} = \emptyset$
-        \item 
-            ${f}_{i}^{\interp_\model} = \truthset{\apath_i}{\model}$ 
-        \item 
-            ${g}_{i}^{\interp_\model}(n) = \data_{\cmp_i}(n)$.
-    \end{enumerate}
+    \begin{align*}
+        {C}_{i}^{\interp_\model} &= \truthset{p_i}{\model} &
+        {r_i}^{\interp_\model} &= \emptyset &
+        {f}_{i}^{\interp_\model} &= \truthset{\apath_i}{\model} &
+        {g}_{i}^{\interp_\model}(n) &= \data_{\cmp_i}(n)
+    \end{align*}
 \end{definition}
 
 The following result states that data models of $\xpath$ can be seen as interpretations of $\alcd$ where $\cdom$ is an equality domain.
