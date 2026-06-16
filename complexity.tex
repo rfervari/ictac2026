@@ -192,7 +192,7 @@ To investigate reasoning problems involving ABoxes and TBoxes, we introduce how 
     We write $\model \vDash \tbox$ iff for all ${p \doteq \varphi} \in \tbox$, it follows that $\model \vDash {p \doteq \varphi}$.
    % We call $\tbox$ \emph{consistent} iff there is $\model$ s.t.\ $\model \vDash \tbox$.
     We write $\model, \naming \vDash \abox$ iff for all $\xi \in \abox$, ${\model, \naming \vDash \xi}$.
-    We say that an ABox $\abox$ is \emph{consistent} iff exists $\model,\naming$ such that  $\model,\naming \vDash \abox$.
+    We say that an ABox $\abox$ is \emph{consistent} iff there exists $\model,\naming$ such that  $\model,\naming \vDash \abox$.
     %We say that a concept $\varphi$ is \emph{satisfiable w.r.t. a TBox $\tbox$} iff exists $\model,\naming$ s.t.\ $\model,\naming\models\tbox$ and $\truthset{\varphi}{\model}\neq\emptyset$.
 \end{definition}
 
@@ -363,7 +363,7 @@ The definition of the valuation for $p$ in each of these cases plays a crucial r
 \end{lemma}
 \begin{proof}   
 %    To simplify notation let $\model' = \model{\restriction}_{\sel(p,n)}$.
-    Item 1 is immediate. From the way in which $\V'$ is defined, we know that for each concept name $q$ s.t.\ ${q \doteq \psi} \in \tbox$  it happens that ${\truthset{q}{\model{\restriction}_{\sel(p,n)}} = \truthset{\psi}{\model{\restriction}_{\sel(p,n)}}}$.
+    Item 1 is immediate. From the way in which $\V'$ is defined, we know that for each concept name $q$ s.t.\ ${q \doteq \psi} \in \tbox$, we have ${\truthset{q}{\model{\restriction}_{\sel(p,n)}} = \truthset{\psi}{\model{\restriction}_{\sel(p,n)}}}$.
     This establishes ${\model{\restriction}_{\sel(p,n)}} \vDash \tbox$.
 
     The following terminology is useful for proving Items 2 and 3.
@@ -434,5 +434,5 @@ The definition of the valuation for $p$ in each of these cases plays a crucial r
 By using~\Cref{lemma:sel:tbox} and the same argument as in~\Cref{theorem:xp-sat-np-complete}, this time w.r.t. a TBox, we obtain the intended result.
 
 \begin{theorem}\label{th:concept-wrt-tbox-xp}
-The problem of concept satisfiability w.r.t. a TBox in $\xpath$ is \np-complete.
+The problem of concept satisfiability w.r.t. an acyclic TBox in $\xpath$ is \np-complete.
 \end{theorem}

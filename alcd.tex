@@ -16,7 +16,7 @@ This is the logic $\alc$ extended with:
             for each $P\in\Phi_\cdom$ there is $\bar{P}\in\Phi_\cdom$ such that $\bar{P}^\cdom=\Delta_\cdom\setminus P_\cdom$,
         (ii) exists $\toppred \in \Phi_\cdom$ s.t.\ $\toppred_\cdom=\Delta_\cdom$, and
         (iii) exists an algorithm for deciding satisfiability of finite conjunctions of the form
-            $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whosef length is the arity of $P_i$.
+            $\bigwedge\setof{P_i(\mathbf{x}_i)}{ i \in [1 \dots k]}$, where $P_i \in \Phi_{\cdom}$ and $\mathbf{x}_i$ is a sequence of variables whose length is the arity of $P_i$.
 \end{definition}
 
 We introduce the syntax and semantics of $\alcd$ relative to an arbitrary but fixed concrete domain $\cdom$ below.
@@ -74,9 +74,9 @@ The semantics of $\alcd$ concepts is given in terms of \emph{interpretations} an
           \item  
             every $r_i \in N_R$ to a binary relation $\sem{r_i}$ on $\Delta_{\interp}$;
           \item 
-            every  $f_i \in N_{aF}$, to a functional binary relation $\sem{r_i}$ on $\Delta_{\interp}$;
+            every  $f_i \in N_{aF}$, to a partial function $\sem{r_i}$ on $\Delta_{\interp}$;
           \item 
-            every $g_i \in N_{cF}$, to a partial function $g^\interp : \Delta_\interp \nrightarrow \Delta_D$.
+            every $g_i \in N_{cF}$, to a partial function $g_i^\interp : \Delta_\interp \nrightarrow \Delta_D$.
           % \item 
           %   every $a_i \in O_a$, $\sem{a_i} \in \Delta_{\interp}$;
           % \item 
@@ -93,8 +93,8 @@ The semantics of $\alcd$ concepts is given in terms of \emph{interpretations} an
     \begin{align*}
       (\lnot C)^\interp                  ={}& \Delta^\interp \setminus C^\interp \\
       (C \sqcap D )^\interp              ={}&  {C^\interp} \cap {D^\interp} \\
-      (\exists R.C )^\interp             ={}& \setof{x}{ \text{exists } y \text{ such that } (x, y) \in R^\interp \text{ and } y \in C^\interp } \\
-      (\exists u_1g_1 \dots u_ng_n.P)^\interp  ={}&  \{x \mid \text{exists } {y_i \in \dom(g_i^\interp)} \text{ such that } \\
+      (\exists R.C )^\interp             ={}& \setof{x}{ \text{there exists } y \text{ such that } (x, y) \in R^\interp \text{ and } y \in C^\interp } \\
+      (\exists u_1g_1 \dots u_ng_n.P)^\interp  ={}&  \{x \mid \text{there exists } {y_i \in \dom(g_i^\interp)} \text{ such that } \\
       & \qquad (x,y_i) \in u_i^\interp \text{ and } (g_1^\interp(y_1) \dots g_n^\interp(y_n)) \in P_\cdom \}.
   \end{align*}
   \end{definition}
