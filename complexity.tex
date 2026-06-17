@@ -13,7 +13,8 @@ We pay attention to the complexity of \emph{concept satisfiability},  ABox \emph
 %Our perspective in this paper is to seeing $\xpath$ as a description logic. In particular, we present it as a fragment of $\alcd$ enjoying some nice computational properties. 
 We start by proving that the satisfiability problem for node expressions in $\xpath$ (referred to as \emph{concept satisfiability} in the DL terminology) is $\np$-complete. This problem consists in, given a node expression $\varphi$, decide whether there is a model $\model$ such that $\truthset{\varphi}{\model}\neq\emptyset$. 
 The argument of the proof is akin to that for the modal logic $\knaltone$. %(i.e., the multi-modal logic over $n$ functional relations).
-The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal}), whose novelty here is the ability of handling data comparisons. In what follows, we will use~$*$ to refer indistinctly to $=$ or $\neq$ in data comparisons.
+The key is a \emph{selection function} (see~\cite[Th.~6.37]{blackburn2001modal}), whose novelty here is the ability of handling data comparisons. A selection function enables us, given a model and a formula, to retain only the parts of the model that are relevant for evaluating the formula. Remarkably, the resulting model has size polynomial in that of the original model and the formula, thereby yielding a \emph{small-model property}.  
+In what follows, we will use~$*$ to refer indistinctly to $=$ or $\neq$ in data comparisons.
 
 \begin{definition}
     \label{def:selection}
